@@ -52,25 +52,25 @@ class _UserinfodrawerState extends State<Userinfodrawer> {
                     decoration: BoxDecoration(
                       boxShadow: [
                         BoxShadow(
-                          color: Color.fromRGBO(211, 211, 211, 0.6),
+                          color: Color.fromRGBO(248, 248, 255, 1),
                           blurRadius: 10,
                           spreadRadius: 0,
                           offset: Offset(0, -10),
                         ),
                         BoxShadow(
-                          color: Color.fromRGBO(211, 211, 211, 0.6),
+                          color: Color.fromRGBO(248, 248, 255, 1),
                           blurRadius: 10,
                           spreadRadius: 0,
                           offset: Offset(-10, 0),
                         ),
                         BoxShadow(
-                          color: Color.fromRGBO(211, 211, 211, 0.6),
+                          color: Color.fromRGBO(248, 248, 248, 1),
                           blurRadius: 10,
                           spreadRadius: 0,
                           offset: Offset(10, 0),
                         ),
                       ],
-                      color: const Color.fromRGBO(211, 211, 211, 0.6),
+                      color: const Color.fromRGBO(248, 248, 248, 1),
                     ),
                     child: Flex(
                       direction: Axis.horizontal,

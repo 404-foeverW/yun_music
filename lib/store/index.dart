@@ -14,6 +14,17 @@ class CommonData extends GetxController {
   List<RecommendMusicNL> getRecommendMusicNL() {
     return recommendMusicNL;
   }
+
+  // 当前tabbar页面
+  int currentTabbarIndex = 0;
+
+  void setCurrentTabbarIndex(int index) {
+    currentTabbarIndex = index;
+  }
+
+  int getCurrentTabbarIndex() {
+    return currentTabbarIndex;
+  }
 }
 
 class DeviceInfoService extends GetxService {

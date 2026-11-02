@@ -1,15 +1,17 @@
 // ignore_for_file: avoid_print
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 import 'package:yun_music/components/musicplayer.dart';
+import 'package:yun_music/store/index.dart';
 
 class TabBarList extends StatefulWidget {
   final player;
-  final Duration fristDuration;
+  final Duration? fristDuration;
   const TabBarList({
     super.key,
     required this.player,
-    required this.fristDuration,
+    this.fristDuration,
   });
 
   @override
@@ -17,18 +19,24 @@ class TabBarList extends StatefulWidget {
 }
 
 class _TabBarListState extends State<TabBarList> {
-  int currentIndex = 0;
+  final commondata = Get.find<CommonData>();
+
+  // int currentIndex = 0;
   void setCurrentIndex(int index) {
-    setState(() {
-      currentIndex = index;
-    });
+    if(tabBarList[index]['path'] != null && tabBarList[index]['path'] != '') {
+      // currentIndex = index;
+      commondata.setCurrentTabbarIndex(index);
+      Navigator.pushNamed(context, tabBarList[index]['path']);
+      return;
+    }
+    setState(() {});
   }
 
   List<Map<String, dynamic>> tabBarList = [
-    {'title': '首页', 'index': 0},
+    {'title': '首页', 'index': 0, 'path': '/'},
     {'title': '搜索', 'index': 1},
     {'title': '笔记', 'index': 2},
-    {'title': '我的', 'index': 3},
+    {'title': '我的', 'index': 3, 'path': '/my'},
   ];
 
   @override
@@ -47,7 +55,8 @@ class _TabBarListState extends State<TabBarList> {
         spacing: 12,
         children: [
           MusicPlayController(
-            current: currentIndex,
+            // current: currentIndex,
+            current: commondata.currentTabbarIndex,
             player: widget.player,
             fristDuration: widget.fristDuration,
           ),
@@ -63,11 +72,11 @@ class _TabBarListState extends State<TabBarList> {
                     tabBarList[index]['title'],
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: currentIndex == index
+                      color: commondata.currentTabbarIndex == index
                           ? Colors.black
                           : Color.fromRGBO(0, 0, 0, 0.2),
                       fontSize: 16,
-                      fontWeight: currentIndex == index
+                      fontWeight: commondata.currentTabbarIndex == index
                           ? FontWeight.bold
                           : FontWeight.normal,
                     ),
