@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:yun_music/pages/my/components/listview.dart';
 
 class Cate {
   String title;
@@ -18,6 +19,7 @@ class Cate {
     VoidCallback? onReachRightEdge,
   })?
   childWidget;
+  Widget Function()? listView;
 
   Cate({
     required this.title,
@@ -25,6 +27,7 @@ class Cate {
     this.iconPath = '',
     this.noticNum = 0,
     this.childWidget,
+    this.listView,
   });
 }
 
@@ -217,6 +220,9 @@ class _TabsParantState extends State<TabsParant> {
   }
 }
 
+Future getRencentInfo(Map<String, dynamic> params) async {
+    
+}
 // 音乐
 class CateMusic extends StatefulWidget {
   final double minExtentHeight;
@@ -238,8 +244,32 @@ class CateMusic extends StatefulWidget {
 }
 
 class _CateMusicState extends State<CateMusic> {
+
   List<Cate> cateList = [
-    Cate(title: '近期', iconPath: 'lib/assets/icon/lock.svg'),
+    Cate(
+      title: '近期', 
+      iconPath: 'lib/assets/icon/lock.svg', 
+      listView: () => CateInfoListView(
+        listViewItem: ListViewItem(
+          requestApi: getRencentInfo,
+          params: {
+            'type': 0,
+          },
+          cateType: 0,
+          customButton: SvgPicture.asset('lib/assets/icon/listdot.svg', width: 20, height: 20),
+          onTap: () {},
+          btnTap: () {},
+          defaultWidget: DefaultWidget(
+            picUrl: '', 
+            title: '我喜欢的音乐', 
+            overlay: SvgPicture.asset('lib/assets/icon/aixin.svg', 
+            width: 20, height: 20),
+            subTitle: Text('161首 * 1216次播放'),
+            customButton: HeartBeat()
+          ),
+        )
+      )
+    ),
     Cate(title: '创建', noticNum: 3, isShowNotic: true),
     Cate(title: '收藏', noticNum: 30, isShowNotic: true),
   ];
@@ -248,35 +278,7 @@ class _CateMusicState extends State<CateMusic> {
     musicIndex = index;
     setState(() {});
   }
-
-  // DateTime? _lastTriggerTime;
-  // final CarouselSliderController _controller = CarouselSliderController();
   final PageController _innerController = PageController();
-
-  // bool _canTrigger() {
-  //   final now = DateTime.now();
-  //   if (_lastTriggerTime != null &&
-  //       now.difference(_lastTriggerTime!) < const Duration(milliseconds: 400)) {
-  //     return false;
-  //   }
-  //   _lastTriggerTime = now;
-  //   return true;
-  // }
-
-  // bool _onScrollNotification(ScrollNotification notification) {
-  //   // print(notification);
-  //   if (notification is! OverscrollNotification) return false;
-  //   final isAtLeft = musicIndex == 0;
-  //   final isAtRight = musicIndex == cateList.length - 1;
-  //   // overscroll < 0：用户向右拉（内容向右溢出）
-  //   // overscroll > 0：用户向左拉
-  //   if (notification.overscroll < 0 && isAtLeft) {
-  //     if (_canTrigger()) widget.onReachLeftEdge?.call();
-  //   } else if (notification.overscroll > 0 && isAtRight) {
-  //     if (_canTrigger()) widget.onReachRightEdge?.call();
-  //   }
-  //   return false;
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -802,7 +804,7 @@ class _CarouselContentState extends State<CarouselContent> {
           // setState(() {});
         },
         itemBuilder: (context, index) {
-          return Container(child: Text('index: $index'));
+          return widget.cateList[index].listView != null ? widget.cateList[index].listView?.call() : Container(child: Text('index: $index'),);
         },
       ),
     );
@@ -815,5 +817,33 @@ class _CarouselContentState extends State<CarouselContent> {
       );
     }
     return content;
+  }
+}
+
+class HeartBeat extends StatefulWidget {
+  const HeartBeat({super.key});
+
+  @override
+  State<HeartBeat> createState() => _HeartBeatState();
+}
+
+class _HeartBeatState extends State<HeartBeat> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.grey,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Flex(
+        spacing: 5,
+        direction: Axis.horizontal,
+        children: [
+          SvgPicture.asset('assets/svg/uniE085.svg', width: 15, height: 15),
+          Text('心动模式', style: TextStyle(color: Colors.black, fontSize: 12),)
+        ]
+      )
+    );
   }
 }
