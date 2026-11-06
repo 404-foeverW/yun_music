@@ -1,8 +1,11 @@
 // ignore_for_file: avoid_print
 
+import 'dart:convert';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:yun_music/pages/my/components/listview.dart';
 
@@ -221,7 +224,15 @@ class _TabsParantState extends State<TabsParant> {
 }
 
 Future getRencentInfo(Map<String, dynamic> params) async {
-    
+  final String jsonStr = await rootBundle.loadString('lib/assets/json/cateInfoMusicList.json');
+  final Map<String, dynamic> json = jsonDecode(jsonStr) as Map<String, dynamic>;
+  final dynamic rawData = json['data'];
+  if (rawData == null || rawData is! List) {
+    return [];   // 或者抛异常
+  }
+  List<Map<String, dynamic>> list = rawData.whereType<Map>().map((e) => Map<String, dynamic>.from(e)).toList();
+  List<CateInfo> data = list.map((e) => CateInfo.fromJson(e)).toList();
+  return data;
 }
 // 音乐
 class CateMusic extends StatefulWidget {
@@ -242,10 +253,8 @@ class CateMusic extends StatefulWidget {
   @override
   State<CateMusic> createState() => _CateMusicState();
 }
-
 class _CateMusicState extends State<CateMusic> {
-
-  List<Cate> cateList = [
+List<Cate> cateList = [
     Cate(
       title: '近期', 
       iconPath: 'lib/assets/icon/lock.svg', 
@@ -260,11 +269,11 @@ class _CateMusicState extends State<CateMusic> {
           onTap: () {},
           btnTap: () {},
           defaultWidget: DefaultWidget(
-            picUrl: '', 
+            picUrl: 'http://p2.music.126.net/ePvxkY3op1VeUoWWB2W_BQ==/109951172387753409.jpg?param=130y130', 
             title: '我喜欢的音乐', 
             overlay: SvgPicture.asset('lib/assets/icon/aixin.svg', 
-            width: 20, height: 20),
-            subTitle: Text('161首 * 1216次播放'),
+            width: 35, height: 35, color: Colors.white),
+            subTitle: Text('161首 * 1216次播放', style: TextStyle(fontSize: 12, color: Colors.grey)),
             customButton: HeartBeat()
           ),
         )
@@ -273,6 +282,7 @@ class _CateMusicState extends State<CateMusic> {
     Cate(title: '创建', noticNum: 3, isShowNotic: true),
     Cate(title: '收藏', noticNum: 30, isShowNotic: true),
   ];
+  
   int musicIndex = 0;
   void setIndex(int index) {
     musicIndex = index;
@@ -833,14 +843,14 @@ class _HeartBeatState extends State<HeartBeat> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Colors.grey,
-        borderRadius: BorderRadius.circular(10),
+        color: Color.fromRGBO(245, 245, 245, 1),
+        borderRadius: BorderRadius.circular(15),
       ),
       child: Flex(
         spacing: 5,
         direction: Axis.horizontal,
         children: [
-          SvgPicture.asset('assets/svg/uniE085.svg', width: 15, height: 15),
+          SvgPicture.asset('lib/assets/icon/uniE085.svg', width: 15, height: 15),
           Text('心动模式', style: TextStyle(color: Colors.black, fontSize: 12),)
         ]
       )

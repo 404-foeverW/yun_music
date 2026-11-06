@@ -1,0 +1,112 @@
+{
+    "data": [
+        {
+            "id": 11,
+            "adType": 1,
+            "name": "「@背景牌的十年精选辑",
+            "coverImgUrl": "https://p1.music.126.net/njwRNsLl12zSP22ktgwygw==/109951167255865358.jpg?param=200y200",
+            "playCount": 134322233,
+            "trackCount": 12,
+            "creator": "背景牌"
+        },
+        {
+            "id": 12,
+            "adType": 1,
+            "name": "轻音乐",
+            "coverImgUrl": "https://p1.music.126.net/9Nco9ph8lZUAR8f-ITl78Q==/109951163051630298.jpg?param=200y200",
+            "playCount": 134322233,
+            "trackCount": 33,
+            "creator": "背景牌"
+        },
+        {
+            "id": 1,
+            "adType": 0,
+            "name": "「蒸汽波/复古风」东京之夜的霓虹美学",
+            "coverImgUrl": "https://p1.music.126.net/5E6EsFo46Ep21mViMi7D7Q==/109951166163288112.jpg?param=40y40",
+            "playCount": 134322233,
+            "trackCount": 44,
+            "creator": "丨IIIIIIIIII丨",
+            "description": "在广袤的空间和无限的时间中，能与你共享同一颗行星和同一段时光是我的荣幸。 "
+        },
+        {
+            "id": 2,
+            "adType": 0,
+            "name": "精选 | 网络热歌分享",
+            "coverImgUrl": "https://p1.music.126.net/zGzNJcfLZfLW7E0bkI0opg==/109951163815887214.jpg?param=200y200",
+            "playCount": 334555666,
+            "trackCount": 23,
+            "creator": "情感文字君",
+            "description": "希望我拼命争取的 最后都能是我的进来了就分享一段自己喜欢的句子、文案吧"
+        },
+        {
+            "id": 3,
+            "adType": 0,
+            "name": "唯美纯音｜一个小小的青春故事。",
+            "coverImgUrl": "https://p1.music.126.net/aLLgf1lW_hONTjsWfG4MFQ==/19136999881699849.jpg?param=200y200",
+            "playCount": 8855543222,
+            "trackCount": 45,
+            "creator": "_Co1sini",
+            "description": "唯美纯音，述说一个小小的青春故事。 "
+        },
+        {
+            "id": 4,
+            "adType": 0,
+            "name": "『经典的魔性背景音乐』",
+            "coverImgUrl": "https://p1.music.126.net/oJnP1bgXOBxmQ132uv_lbg==/3300733914153093.jpg?param=200y200",
+            "playCount": 556673232,
+            "trackCount": 54,
+            "creator": "右心丶",
+            "description": "想要在人群之中显示出自己的与众不同？想要时时刻刻尽显装逼范？那就享用这单歌单吧让你一听就能想到那个场景装逼如风，常伴汝身！魔性，喜感，装逼，少而精。"
+        },
+        {
+            "id": 5,
+            "adType": 0,
+            "name": "强烈魔性背景音乐；你值得拥有",
+            "coverImgUrl": "https://p1.music.126.net/crkL3Q5J1I6vm59Ufy8qNw==/18951182416678231.jpg?param=200y200",
+            "playCount": 256784355,
+            "trackCount": 13,
+            "creator": "maxbilibili",
+            "description": "哲学与艺术并存如呲琦啪白勺歌单，汝为嗬不收藏如有好歌，请留唁在评论区里，虽然峨不欺望唷评论就素和那些妖艳贱货不一样，啾咪惹 "
+        },
+        {
+            "id": 6,
+            "adType": 0,
+            "name": "不能好好走路BGM〔开气场♂专用(误)〕",
+            "coverImgUrl": "https://p1.music.126.net/l3GQKd-n34On-gmRiOkhgg==/109951163675929210.jpg?param=200y200",
+            "playCount": 3459907,
+            "trackCount": 67,
+            "creator": "Loco-_-",
+            "description": "果咩引了不少ky小鬼污染评论区 "
+        },
+        {
+            "id": 7,
+            "adType": 0,
+            "name": "逗比出场专用：画风突变的搞笑BGM",
+            "coverImgUrl": "https://p1.music.126.net/dsdYOlWqRxr-Pt9feY-LEg==/109951166209115597.jpg?param=200y200",
+            "playCount": 34789567,
+            "trackCount": 16,
+            "creator": "Sakura狐狸",
+            "description": "此歌单纯属娱乐，请大家慎点，防止中毒太深，无限循环，在逗比的道路上越走越远"
+        },
+        {
+            "id": 8,
+            "adType": 0,
+            "name": "『魔性循环』你所耳熟能详的搞事情歌单",
+            "coverImgUrl": "https://p1.music.126.net/MaOM4g0x-rwIraX34l4Zfg==/109951165949783373.jpg?param=200y200",
+            "playCount": 4567345,
+            "trackCount": 17,
+            "creator": "Ye2y_",
+            "description": "非正经歌单，请安心食用。听说日推更爱我了呢！18年歌单，老字号，味更香。推广请小窗。最后祝各位可以保持理智！ "
+        },
+        {
+            "id": 9,
+            "adType": 0,
+            "name": "解题神器·用古典乐启发与活跃你的思维.",
+            "coverImgUrl": "https://p1.music.126.net/Y8rd4yqZ0eMrLL-jL0SA2Q==/1400777818360659.jpg?param=200y200",
+            "playCount": 347889567,
+            "trackCount": 26,
+            "creator": "Overture1812",
+            "description": "我在思考问题的时候会拉小提琴，有时我会连续几天一言不发，你会介意吗？—— 未来的室友应该了解彼此最差的情况。」 —— 夏洛克·福尔摩斯"
+        }
+    ]
+}
