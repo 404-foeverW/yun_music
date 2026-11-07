@@ -3,6 +3,7 @@
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:yun_music/pages/my/index2.dart';
 
 // class Cate {
@@ -35,8 +36,8 @@ class Catecontent extends StatefulWidget {
   final double minExtentHeight;
   final CarouselSliderController carouselController;
   final PageController innerController;
-  final int currentIndex;
-  final int subCurrentIndex;
+  final RxInt currentIndex;
+  final RxInt subCurrentIndex;
   final void Function(int index) onSubTabChange;
   final void Function(int index) onTabChange;
   const Catecontent({
@@ -66,8 +67,8 @@ class _CatecontentState extends State<Catecontent> {
           viewportFraction: 1,
           height: widget.minExtentHeight * 0.9,
           onPageChanged: (index, reason) {
-            widget.onTabChange(index);
-            setState(() {});
+            widget.onSubTabChange(widget.subCurrentIndex.value);
+            // setState(() {});
           },
           scrollPhysics: const NeverScrollableScrollPhysics(),
         ),
@@ -77,33 +78,35 @@ class _CatecontentState extends State<Catecontent> {
             height: widget.minExtentHeight * 0.9,
             child: CarouselContent(
               cateList: widget.cateList[index].children,
-              index: widget.subCurrentIndex,
+              index: widget.subCurrentIndex.value,
+              listView: widget.cateList[index].listView,
               onReachLeftEdge: () {
-                print('onReachLeftEdge');
                 // 内层最左继续右拉 → 父组件上一页
-                if (index == 0) {
+                if (index > 0) {
                 print('onReachLeftEdge');
                   widget.carouselController.previousPage(
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
                   );
-                  widget.onTabChange(widget.currentIndex - 1);
+                  widget.onTabChange(widget.currentIndex.value - 1);
                 }
                 // widget.onTabChange(widget.currentIndex - 1);
               },
               onReachRightEdge: () {
-                print('onReachRightEdge');
+                print(widget.cateList.length);
+                print(index< widget.cateList.length - 1);
                 // 内层最右继续左拉 → 父组件下一页
-                if (index == widget.cateList.length - 1) {
+                if (index < widget.cateList.length - 1) {
+                  print('onReachRightEdge');
                   widget.carouselController.nextPage(
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
                   );
-                  widget.onTabChange(widget.currentIndex + 1);
+                  widget.onTabChange(widget.currentIndex.value + 1);
                 }
               },
               setIndex: widget.onSubTabChange,
-              innerController: widget.innerController,
+              innerController: widget.cateList[index].innerController ?? PageController(),
             ),
           );
         },
@@ -118,12 +121,11 @@ class CarouselContent extends StatefulWidget {
   final int index;
   final Function(int index) setIndex;
   final PageController innerController;
-
   /// 内层最左继续向右拉时触发（父组件上一页）
   final VoidCallback? onReachLeftEdge;
-
   /// 内层最右继续向左拉时触发（父组件下一页）
   final VoidCallback? onReachRightEdge;
+  final Widget Function()? listView;
 
   const CarouselContent({
     super.key,
@@ -133,6 +135,7 @@ class CarouselContent extends StatefulWidget {
     required this.innerController,
     this.onReachLeftEdge,
     this.onReachRightEdge,
+    this.listView,
   });
 
   @override
@@ -143,8 +146,6 @@ class _CarouselContentState extends State<CarouselContent> {
   double _dragDelta = 0; // 拖拽距离
   bool get _isSinglePage => widget.cateList!.length <= 1;
   DateTime? _lastTriggerTime;
-  // final CarouselSliderController _controller = CarouselSliderController();
-  // final PageController _innerController = PageController();
 
   bool _canTrigger() {
     final now = DateTime.now();
@@ -173,12 +174,15 @@ class _CarouselContentState extends State<CarouselContent> {
     }
     _dragDelta = 0;
   }
+  int _innerIndex = 0;
 
   bool _onScrollNotification(ScrollNotification notification) {
     // print(notification);
     if (notification is! OverscrollNotification) return false;
-    final isAtLeft = widget.index == 0;
-    final isAtRight = widget.index == widget.cateList!.length - 1;
+    // final isAtLeft = widget.index == 0;
+    // final isAtRight = widget.index == widget.cateList!.length - 1;
+    final isAtLeft = _innerIndex == 0;
+    final isAtRight = _innerIndex == widget.cateList!.length - 1;
     // overscroll < 0：用户向右拉（内容向右溢出）
     // overscroll > 0：用户向左拉
     if (notification.overscroll < 0 && isAtLeft) {
@@ -195,17 +199,23 @@ class _CarouselContentState extends State<CarouselContent> {
     final content = NotificationListener<ScrollNotification>(
       onNotification: _onScrollNotification,
       child: PageView.builder(
+        // controller: widget.innerController,
         controller: widget.innerController,
         physics: const ClampingScrollPhysics(),
         itemCount: widget.cateList!.length,
         onPageChanged: (index) {
+          _innerIndex = index;
           widget.setIndex(index);
           // widget.index = index; // 不setState
           // setState(() {});
         },
         itemBuilder: (context, index) {
-          return Container(child: Text('index: $index'));
-          // return widget.cateList![index].listView != null ? widget.cateList![index].listView?.call() : Container(child: Text('index: $index'),);
+          // return widget.cateList![index].listView != null ? 
+          //   widget.cateList![index].listView?.call() 
+          //   : Container(child: Text('index: $index'),);
+          return widget.listView != null ? 
+            widget.listView?.call() 
+            : Container(child: Text('index: $index'),);
         },
       ),
     );

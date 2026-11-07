@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 class Cate {
   String title;
@@ -31,8 +32,8 @@ class Cate {
 }
 
 class InfoCate extends SliverPersistentHeaderDelegate {
-  final int currentIndex;
-  final int subCurrentIndex;
+  final RxInt currentIndex;
+  final RxInt subCurrentIndex;
   final void Function(int) onTabChange;
   final void Function(int) onSubTabChange;
   final double containerHeight = 120;
@@ -75,14 +76,16 @@ class InfoCate extends SliverPersistentHeaderDelegate {
               topRight: Radius.circular(radius),
             ),
           ),
-          child: TabsParant(
-            minExtentHeight: minExtentHeight,
-            cateList: cateList,
-            currentIndex: currentIndex,
-            subCurrentIndex: subCurrentIndex,
-            onTabChange: onTabChange,
-            onSubTabChange: onSubTabChange,
-          ),
+          child: Obx(() {
+            return TabsParant(
+              minExtentHeight: minExtentHeight,
+              cateList: cateList,
+              currentIndex: currentIndex.value,
+              subCurrentIndex: subCurrentIndex.value,
+              onTabChange: onTabChange,
+              onSubTabChange: onSubTabChange,
+            );
+          }),
         );
       },
     );
@@ -96,10 +99,11 @@ class InfoCate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
-    return (
-      currentIndex != (oldDelegate as InfoCate).currentIndex ||
-      subCurrentIndex != (oldDelegate as InfoCate).subCurrentIndex
-    );
+    // return (
+    //   currentIndex != (oldDelegate as InfoCate).currentIndex ||
+    //   subCurrentIndex != (oldDelegate as InfoCate).subCurrentIndex
+    // );
+    return false;
   }
 }
 

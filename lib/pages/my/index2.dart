@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:carousel_slider/carousel_controller.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -24,6 +25,7 @@ class Cate {
   int? noticNum;
   List<Cate>? children; // 子分类
   Widget Function()? listView;
+  PageController? innerController;
 
   Cate({
     required this.title,
@@ -32,6 +34,7 @@ class Cate {
     this.isShowNotic,
     this.noticNum,
     this.children,
+    this.innerController
   });
 }
 
@@ -70,19 +73,36 @@ class _MyPageTState extends State<MyPageT> {
     topDistance = position.dy;
   }
 
-  int currentIndex = 0;
-  int subCurrentIndex = 0;
+  RxInt currentIndex = 0.obs;
+  RxInt subCurrentIndex = 0.obs;
   void setCurrentIndex(int index) {
-    setState(() {
-      currentIndex = index;
-    });
+    currentIndex.value = index;
+    _controller.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeIn,
+    );
+    // createNewPageController();
+    // setState(() {
+    //   currentIndex.value = index;
+    // });
   }
 
   void setSubCurrentIndex(int index) {
-    setState(() {
-      subCurrentIndex = index;
-    });
+    subCurrentIndex.value = index;
+    cateList[currentIndex.value].innerController!.animateToPage(index,duration: const Duration(milliseconds: 300),
+      curve: Curves.linear,);
+    // _innerController.jumpToPage(index);
+    // setState(() {
+    //   subCurrentIndex.value = index;
+    //   print(1);
+    // });
   }
+
+  // void createNewPageController() {
+  //   _innerController.dispose();
+  //   _innerController = PageController(initialPage: subCurrentIndex.value);
+  // }
 
   List<Cate> cateList = [
     Cate(
@@ -92,6 +112,64 @@ class _MyPageTState extends State<MyPageT> {
         Cate(title: '创建', noticNum: 3, isShowNotic: true),
         Cate(title: '收藏', noticNum: 30, isShowNotic: true),
       ],
+      innerController: PageController(),
+      listView: () => CateInfoListView(
+        listViewItem: ListViewItem(
+          requestApi: getRencentInfo,
+          params: {'type': 0},
+          cateType: 0,
+          customButton: SvgPicture.asset(
+            'lib/assets/icon/listdot.svg',
+            width: 20,
+            height: 20,
+          ),
+          onTap: () {},
+          btnTap: () {},
+          defaultWidget: DefaultWidget(
+            picUrl: 'http://p2.music.126.net/ePvxkY3op1VeUoWWB2W_BQ==/109951172387753409.jpg?param=130y130',
+            title: '我喜欢的音乐',
+            overlay: SvgPicture.asset(
+              'lib/assets/icon/aixin.svg',
+              width: 35,
+              height: 35,
+              color: Colors.white,
+            ),
+            subTitle: Text(
+              '161首 * 1216次播放',
+              style: TextStyle(fontSize: 12, color: Colors.grey),
+            ),
+            customButton: HeartBeat(),
+          ),
+          operatorWidgets: [
+            OperatorWidget(
+              icon: Icon(CupertinoIcons.chart_bar_square_fill),
+              title: '听歌排行',
+              subTitle: '累计听歌1123首歌',
+              onTap: () {},
+            ),
+            OperatorWidget(
+              icon: Icon(CupertinoIcons.plus, size: 20,),
+              title: '新建歌单',
+              onTap: () {},
+            ),
+            OperatorWidget(
+              icon: SvgPicture.asset('lib/assets/icon/daoru.svg', width: 20, height: 20),
+              title: '导入外部歌单',
+              subTitle: '轻松导入其他APP里的歌单',
+              onTap: () {},
+            ),
+          ],
+        ),
+      ),
+    ),
+    Cate(
+      title: '播客',
+      children: [
+        Cate(title: '全部', noticNum: 0, isShowNotic: true),
+        Cate(title: '播客', noticNum: 3, isShowNotic: true),
+        Cate(title: '有声书', noticNum: 30, isShowNotic: true),
+      ],
+      innerController: PageController(),
       listView: () => CateInfoListView(
         listViewItem: ListViewItem(
           requestApi: getRencentInfo,
@@ -125,7 +203,7 @@ class _MyPageTState extends State<MyPageT> {
   ];
 
   final CarouselSliderController _controller = CarouselSliderController();
-  final PageController _innerController = PageController();
+  PageController _innerController = PageController();
 
   @override
   void dispose() {
