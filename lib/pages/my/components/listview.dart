@@ -2,6 +2,8 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:yun_music/pages/my/components/recommendList.dart';
+import 'package:yun_music/pages/my/index2.dart';
 
 class CateInfo {
   int id;
@@ -84,8 +86,18 @@ class OperatorWidget {
 }
 
 class ListViewItem {
+  Cate item;
+  // 列表数据
+  List<CateInfo> list;
+  // 最近收听数据
+  List<CateInfo> recentList;
+  List<CateInfo> recommendList;
   // 请求的api地址
   Future Function(Map<String, dynamic>) requestApi;
+  // 请求最近收听api
+  Future Function(Map<String, dynamic>)? requestRecentApi;
+  // 最近收听参数
+  Map<String, dynamic>? recentParams;
   // 请求参数
   Map<String, dynamic> params;
   // 分类类型
@@ -102,9 +114,15 @@ class ListViewItem {
   List<OperatorWidget>? operatorWidgets;
 
   ListViewItem({
+    required this.item,
     required this.requestApi,
     required this.params,
     required this.cateType,
+    required this.list,
+    this.recentList = const [],
+    this.recommendList = const [],
+    this.requestRecentApi,
+    this.recentParams,
     this.defaultWidget,
     this.operatorWidgets,
     required this.onTap,
@@ -122,35 +140,45 @@ class CateInfoListView extends StatefulWidget {
 }
 
 class _CateInfoListViewState extends State<CateInfoListView> {
-  List<CateInfo> _list = [];
-  bool _loading = true;
-  bool _loaded = false;
+  // List<CateInfo> _list = [];
+  // List<CateInfo> _rencentlist = [];
 
-  Future<void> getInfo() async {
-    if (_loaded) return;
-    _list = await widget.listViewItem.requestApi(widget.listViewItem.params);
-    _loading = false;
-    _loaded = true;
-    setState(() {});
-  }
+  // bool _loading = true;
+  // bool _loaded = false;
 
-  @override
-  void initState() {
-    super.initState();
-    getInfo();
-  }
+  // Future<void> getInfo() async {
+  //   if (_loaded) return;
+  //   _list = await widget.listViewItem.requestApi(widget.listViewItem.params);
+  //   if (widget.listViewItem.requestRecentApi != null) {
+  //     _rencentlist = await widget.listViewItem.requestRecentApi!(
+  //       widget.listViewItem.recentParams!,
+  //     );
+  //   }
+  //   _loading = false;
+  //   _loaded = true;
+  //   setState(() {});
+  // }
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   getInfo();
+  // }
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) {
-      return const Center(child: CircularProgressIndicator());
-    }
+    // if (_loading) {
+    //   return const Center(child: CircularProgressIndicator());
+    // }
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 0),
       child: CustomScrollView(
         // spacing: 10,
         slivers: [
-          if (widget.listViewItem.defaultWidget != null)
+          if (widget.listViewItem.defaultWidget != null &&
+              widget.listViewItem.item.listStructure.contains(
+                ListStructure.defaultWidget,
+              ))
             SliverToBoxAdapter(
               child: ListItem(
                 cateType: widget.listViewItem.cateType,
@@ -163,47 +191,93 @@ class _CateInfoListViewState extends State<CateInfoListView> {
               ),
             ),
           SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final item = _list[index];
-                return ListItem(
+            delegate: SliverChildBuilderDelegate((context, index) {
+              // final item = _list[index];
+              final item = widget.listViewItem.list[index];
+              return ListItem(
+                cateType: widget.listViewItem.cateType,
+                picUrl: item.coverImgUrl,
+                title: item.name,
+                subTitle: widget.listViewItem.cateType == 0
+                    ? Text(
+                        '歌单 * ${item.trackCount}首 * ${item.creator}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      )
+                    : Text(
+                        item.description,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                description: item.description,
+                btnTap: widget.listViewItem.btnTap,
+                customButton: widget.listViewItem.customButton,
+              );
+            }, childCount: widget.listViewItem.list.length),
+          ),
+          if (widget.listViewItem.operatorWidgets != null && widget.listViewItem.item.listStructure.contains(
+                ListStructure.operatorWidgets,
+              ))
+            SliverList(
+              delegate: SliverChildBuilderDelegate((context, index) {
+                final item = widget.listViewItem.operatorWidgets![index];
+                return OperatorItem(
+                  icon: item.icon,
+                  title: item.title,
+                  subTitle: item.subTitle,
+                  onTap: item.onTap,
+                  customButton: item.customButton,
+                );
+              }, childCount: widget.listViewItem.operatorWidgets!.length),
+            ),
+          if (widget.listViewItem.item.listStructure.contains(
+                ListStructure.rencentlistWidget,
+              ))
+            if (widget.listViewItem.recentList.isEmpty)
+              const SliverToBoxAdapter(child: Center(child: Text('暂无数据')))
+            else
+              SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  // final item = _rencentlist[index];
+                  final item = widget.listViewItem.recentList[index];
+                  return ListItem(
+                    cateType: widget.listViewItem.cateType,
+                    picUrl: item.coverImgUrl,
+                    title: item.name,
+                    subTitle: Text(
+                      item.description,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    description: item.description,
+                    btnTap: widget.listViewItem.btnTap,
+                    customButton: widget.listViewItem.customButton,
+                  );
+                }, childCount: widget.listViewItem.recentList.length),
+              ),
+            if(widget.listViewItem.item.listStructure.contains(
+                ListStructure.noticWidget,
+            ))
+              SliverPersistentHeader(
+                delegate: NoticeItem(),
+              ),
+            if(widget.listViewItem.recommendList.isNotEmpty && widget.listViewItem.item.listStructure.contains(
+                ListStructure.recommendWidget,
+            ))
+              SliverPersistentHeader(
+                delegate: RecommendList(
+                  recommendList: widget.listViewItem.recommendList,
                   cateType: widget.listViewItem.cateType,
-                  picUrl: item.coverImgUrl,
-                  title: item.name,
-                  subTitle: widget.listViewItem.cateType == 0
-                      ? Text('歌单 * ${item.trackCount}首 * ${item.creator}',
-                          maxLines: 1, overflow: TextOverflow.ellipsis)
-                      : Text(item.description,
-                          maxLines: 2, overflow: TextOverflow.ellipsis),
-                  description: item.description,
+                  onTap: widget.listViewItem.onTap,
                   btnTap: widget.listViewItem.btnTap,
                   customButton: widget.listViewItem.customButton,
-                );
-              },
-              childCount: _list.length,
-            ),
-          ),
-          if (widget.listViewItem.operatorWidgets != null)
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final item = widget.listViewItem.operatorWidgets![index];
-                  return OperatorItem(
-                    icon: item.icon,
-                    title: item.title,
-                    subTitle: item.subTitle,
-                    onTap: item.onTap,
-                    customButton: item.customButton,
-                  );
-                },
-                childCount: widget.listViewItem.operatorWidgets!.length,
-              ),
-            ),
+                ),
+              )
           // SliverToBoxAdapter(
           //   child: ListView(
           //     padding: const EdgeInsets.only(top: 0),
           //     shrinkWrap: true,
-          //     physics: const NeverScrollableScrollPhysics(), 
+          //     physics: const NeverScrollableScrollPhysics(),
           //     children: [
           //       if (widget.listViewItem.defaultWidget != null)
           //       ListItem(
@@ -421,31 +495,69 @@ class OperatorItem extends StatefulWidget {
 class _OperatorItemState extends State<OperatorItem> {
   @override
   Widget build(BuildContext context) {
-    return Flex(
-      direction: Axis.horizontal,
-      children: [
-        Container(
-          width: 60,
-          height: 60,
-          alignment: Alignment.center,
-          child: widget.icon,
-        ),
-        Flex(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          direction: Axis.vertical,
-          spacing: 5,
-          children: [
-            Text(
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              widget.title,
-              style: TextStyle(fontSize: 16, color: Colors.black),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 0, vertical: 5),
+      child: Flex(
+        spacing: 10,
+        direction: Axis.horizontal,
+        children: [
+          Container(
+            width: 80,
+            height: 80,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 239, 237, 237),
+              borderRadius: BorderRadius.circular(5),
             ),
-            if (widget.subTitle != null) Text(widget.subTitle ?? ''),
-          ],
-        ),
-        if (widget.customButton != null) widget.customButton ?? Container(),
-      ],
+            child: widget.icon,
+          ),
+          Flex(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            direction: Axis.vertical,
+            spacing: 5,
+            children: [
+              Text(
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                widget.title,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              if (widget.subTitle != null)
+                Text(
+                  widget.subTitle ?? '',
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+            ],
+          ),
+          if (widget.customButton != null) widget.customButton ?? Container(),
+        ],
+      ),
     );
+  }
+}
+
+class NoticeItem extends SliverPersistentHeaderDelegate {
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      alignment: Alignment.center,
+      child: Text('展示创建/收藏的30条内容，该列表仅自己可见', style: TextStyle(fontSize: 12, color: Colors.grey)),
+    );
+  }
+
+  @override
+  double get maxExtent => 80;
+
+  @override
+  double get minExtent => 80;
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+    return false;
   }
 }

@@ -258,26 +258,27 @@ List<Cate> cateList = [
     Cate(
       title: '近期', 
       iconPath: 'lib/assets/icon/lock.svg', 
-      listView: () => CateInfoListView(
-        listViewItem: ListViewItem(
-          requestApi: getRencentInfo,
-          params: {
-            'type': 0,
-          },
-          cateType: 0,
-          customButton: SvgPicture.asset('lib/assets/icon/listdot.svg', width: 20, height: 20),
-          onTap: () {},
-          btnTap: () {},
-          defaultWidget: DefaultWidget(
-            picUrl: 'http://p2.music.126.net/ePvxkY3op1VeUoWWB2W_BQ==/109951172387753409.jpg?param=130y130', 
-            title: '我喜欢的音乐', 
-            overlay: SvgPicture.asset('lib/assets/icon/aixin.svg', 
-            width: 35, height: 35, color: Colors.white),
-            subTitle: Text('161首 * 1216次播放', style: TextStyle(fontSize: 12, color: Colors.grey)),
-            customButton: HeartBeat()
-          ),
-        )
-      )
+      // listView: () => CateInfoListView(
+      //   listViewItem: ListViewItem(
+      //     list: [],
+      //     requestApi: getRencentInfo,
+      //     params: {
+      //       'type': 0,
+      //     },
+      //     cateType: 0,
+      //     customButton: SvgPicture.asset('lib/assets/icon/listdot.svg', width: 20, height: 20),
+      //     onTap: () {},
+      //     btnTap: () {},
+      //     defaultWidget: DefaultWidget(
+      //       picUrl: 'http://p2.music.126.net/ePvxkY3op1VeUoWWB2W_BQ==/109951172387753409.jpg?param=130y130', 
+      //       title: '我喜欢的音乐', 
+      //       overlay: SvgPicture.asset('lib/assets/icon/aixin.svg', 
+      //       width: 35, height: 35, color: Colors.white),
+      //       subTitle: Text('161首 * 1216次播放', style: TextStyle(fontSize: 12, color: Colors.grey)),
+      //       customButton: HeartBeat()
+      //     ),
+      //   )
+      // )
     ),
     Cate(title: '创建', noticNum: 3, isShowNotic: true),
     Cate(title: '收藏', noticNum: 30, isShowNotic: true),

@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:yun_music/pages/my/components/listview.dart';
 import 'package:yun_music/pages/my/index2.dart';
 
 // class Cate {
@@ -32,24 +33,44 @@ import 'package:yun_music/pages/my/index2.dart';
 // }
 
 class Catecontent extends StatefulWidget {
+  final bool Function() isStopChange;
   final List<Cate> cateList;
   final double minExtentHeight;
   final CarouselSliderController carouselController;
-  final PageController innerController;
+  // final PageController innerController;
   final RxInt currentIndex;
   final RxInt subCurrentIndex;
   final void Function(int index) onSubTabChange;
   final void Function(int index) onTabChange;
+  // 请求的api地址
+  final Future Function(Map<String, dynamic>) requestApi;
+  // 请求最近收听api
+  final Future Function(Map<String, dynamic>)? requestRecentApi;
+  // 请求推荐api
+  final Future Function(Map<String, dynamic>)? requestRecommendApi;
+  // 最近收听参数
+  final Map<String, dynamic>? recentParams;
+  // 推荐参数
+  final Map<String, dynamic>? recommendParams;
+  // 请求参数
+  final Map<String, dynamic> params;
   const Catecontent({
     super.key,
+    required this.isStopChange,
     required this.minExtentHeight,
     required this.carouselController,
-    required this.innerController,
+    // required this.innerController,
     required this.currentIndex,
     required this.subCurrentIndex,
     required this.onSubTabChange,
     required this.onTabChange,
     required this.cateList,
+    required this.requestApi,
+    this.requestRecentApi,
+    this.recentParams,
+    this.params = const {},
+    this.requestRecommendApi,
+    this.recommendParams,
   });
 
   @override
@@ -57,6 +78,33 @@ class Catecontent extends StatefulWidget {
 }
 
 class _CatecontentState extends State<Catecontent> {
+  List<CateInfo> _list = [];
+  List<CateInfo> _rencentlist = [];
+  List<CateInfo> _recommendlist = [];
+
+  bool _loading = true;
+  bool _loaded = false;
+
+  Future<void> getInfo() async {
+    if (_loaded) return;
+    _list = await widget.requestApi(widget.params);
+    if (widget.requestRecentApi != null) {
+      _rencentlist = await widget.requestRecentApi!(widget.recentParams!);
+    }
+    if (widget.requestRecommendApi != null) {
+      _recommendlist = await widget.requestRecommendApi!(widget.recommendParams!);
+    }
+    _loading = false;
+    _loaded = true;
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getInfo();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -65,7 +113,8 @@ class _CatecontentState extends State<Catecontent> {
         carouselController: widget.carouselController, // 绑定
         options: CarouselOptions(
           viewportFraction: 1,
-          height: widget.minExtentHeight * 0.9,
+          // height: widget.minExtentHeight * 0.7,
+          height: widget.minExtentHeight,
           onPageChanged: (index, reason) {
             widget.onSubTabChange(widget.subCurrentIndex.value);
             // setState(() {});
@@ -75,15 +124,21 @@ class _CatecontentState extends State<Catecontent> {
         itemCount: widget.cateList.length,
         itemBuilder: (context, index, realIndex) {
           return SizedBox(
-            height: widget.minExtentHeight * 0.9,
+            // height: widget.minExtentHeight * 0.7,
+            height: widget.minExtentHeight,
             child: CarouselContent(
+              isStopChange: widget.isStopChange,
+              list: _list,
+              rencentlist: _rencentlist,
+              recommendlist: _recommendlist,
               cateList: widget.cateList[index].children,
               index: widget.subCurrentIndex.value,
               listView: widget.cateList[index].listView,
               onReachLeftEdge: () {
                 // 内层最左继续右拉 → 父组件上一页
-                if (index > 0) {
-                print('onReachLeftEdge');
+                if (widget.currentIndex.value > 0) {
+                  print('onReachLeftEdge');
+                  print(index);
                   widget.carouselController.previousPage(
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
@@ -93,10 +148,10 @@ class _CatecontentState extends State<Catecontent> {
                 // widget.onTabChange(widget.currentIndex - 1);
               },
               onReachRightEdge: () {
-                print(widget.cateList.length);
-                print(index< widget.cateList.length - 1);
+                // print(widget.cateList.length);
+                // print(index < widget.cateList.length - 1);
                 // 内层最右继续左拉 → 父组件下一页
-                if (index < widget.cateList.length - 1) {
+                if (widget.currentIndex.value < widget.cateList.length - 1) {
                   print('onReachRightEdge');
                   widget.carouselController.nextPage(
                     duration: const Duration(milliseconds: 300),
@@ -106,7 +161,8 @@ class _CatecontentState extends State<Catecontent> {
                 }
               },
               setIndex: widget.onSubTabChange,
-              innerController: widget.cateList[index].innerController ?? PageController(),
+              innerController:
+                  widget.cateList[index].innerController ?? PageController(),
             ),
           );
         },
@@ -117,22 +173,38 @@ class _CatecontentState extends State<Catecontent> {
 
 // 轮播主体内容
 class CarouselContent extends StatefulWidget {
+  final bool Function() isStopChange;
+  final List<CateInfo> list;
+  final List<CateInfo>? rencentlist;
+  final List<CateInfo>? recommendlist;
   final List<Cate>? cateList;
   final int index;
   final Function(int index) setIndex;
   final PageController innerController;
+
   /// 内层最左继续向右拉时触发（父组件上一页）
   final VoidCallback? onReachLeftEdge;
+
   /// 内层最右继续向左拉时触发（父组件下一页）
   final VoidCallback? onReachRightEdge;
-  final Widget Function()? listView;
+  final Widget Function(
+    List<CateInfo>,
+    Cate item, {
+    List<CateInfo> rencentlist,
+    List<CateInfo> recommendlist,
+  })?
+  listView;
 
   const CarouselContent({
     super.key,
+    required this.isStopChange,
     required this.cateList,
     required this.index,
     required this.setIndex,
     required this.innerController,
+    required this.list,
+    required this.rencentlist,
+    required this.recommendlist,
     this.onReachLeftEdge,
     this.onReachRightEdge,
     this.listView,
@@ -174,6 +246,7 @@ class _CarouselContentState extends State<CarouselContent> {
     }
     _dragDelta = 0;
   }
+
   int _innerIndex = 0;
 
   bool _onScrollNotification(ScrollNotification notification) {
@@ -193,8 +266,18 @@ class _CarouselContentState extends State<CarouselContent> {
     return false;
   }
 
+  List<CateInfo> filterList(List<int> filterType, List<CateInfo> list) {
+    return list
+        .where((element) => filterType.contains(element.adType))
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
+    // List<CateInfo> list = filterList(
+    //   widget.cateList![index].filterType,
+    //   widget.list
+    // );
     if (!widget.cateList!.isNotEmpty) return Text('暂未有数据');
     final content = NotificationListener<ScrollNotification>(
       onNotification: _onScrollNotification,
@@ -204,18 +287,24 @@ class _CarouselContentState extends State<CarouselContent> {
         physics: const ClampingScrollPhysics(),
         itemCount: widget.cateList!.length,
         onPageChanged: (index) {
+          if(!widget.isStopChange()) return;
           _innerIndex = index;
           widget.setIndex(index);
           // widget.index = index; // 不setState
           // setState(() {});
         },
         itemBuilder: (context, index) {
-          // return widget.cateList![index].listView != null ? 
-          //   widget.cateList![index].listView?.call() 
+          // return widget.cateList![index].listView != null ?
+          //   widget.cateList![index].listView?.call()
           //   : Container(child: Text('index: $index'),);
-          return widget.listView != null ? 
-            widget.listView?.call() 
-            : Container(child: Text('index: $index'),);
+          return widget.listView != null
+              ? widget.listView?.call(
+                  filterList(widget.cateList![index].filterType, widget.list),
+                  widget.cateList![index],
+                  rencentlist: widget.rencentlist ?? [],
+                  recommendlist: widget.recommendlist ?? [],
+                )
+              : Container(child: Text('index: $index'));
         },
       ),
     );
