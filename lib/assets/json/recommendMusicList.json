@@ -1,0 +1,64 @@
+{
+    "data": [
+        {
+            "id": 1,
+            "adType": 0,
+            "name": "高级感/氛围感/耳机党最爱的英文歌",
+            "coverImgUrl": "https://p1.music.126.net/Iqu_4OzcnkZw7nMEkRYWGg==/109951172389652418.jpg?param=200y200",
+            "playCount": 5622,
+            "trackCount": 31,
+            "creator": "科尔马语宝宝",
+            "description": "阴郁的天空，把一切都染成了灰色。如水的光阴，悄悄走过，留下无限的惆怅，让一切都变的那么的苍凉。"
+        },
+        {
+            "id": 2,
+            "adType": 0,
+            "name": "纯音乐 | Broken Cadence 余音葬旧梦 卡点",
+            "coverImgUrl": "https://p1.music.126.net/7GPEre4grtDSC4YMWraQVQ==/109951173938320022.jpg?param=200y200",
+            "playCount": 15794,
+            "trackCount": 36,
+            "creator": "700612_",
+            "description": " 快节奏 be 刀子 纯音乐 卡点让音符替那些遗憾好好说再见。"
+        },
+        {
+            "id": 3,
+            "adType": 0,
+            "name": "［东方 舒缓纯音］世间桃源，唯幻想乡",
+            "coverImgUrl": "https://p1.music.126.net/FpCuR8y2stnEFqqOAXEtBw==/109951164195552509.jpg?param=200y200",
+            "playCount": 1496298,
+            "trackCount": 139,
+            "creator": "奈何藥丸",
+            "description": "当你独自一人时，想要安静，就听一听东方的纯音，随着音乐的旋律进入幻想乡吧......封面画师：こゆきさん“此处，透露出幻想与真实的界限。”“两者宛若光与影，相生相存。”“或许已然随风消逝，遁入幻想不曾留下任何踪影。但那红楼歌谣般的梦，仍存于人们脑海中，化为心底悠然的回忆而永不消散。”"
+        },
+        {
+            "id": 4,
+            "adType": 0,
+            "name": "【轻音｜钢琴与提琴合奏燃音乐】",
+            "coverImgUrl": "https://p1.music.126.net/oJnP1bgXOBxmQ132uv_lbg==/3300733914153093.jpg?param=200y200",
+            "playCount": 372475,
+            "trackCount": 182,
+            "creator": "乡村基月光边境",
+            "description": "燃 小提琴 钢琴 治愈 进入状态感受提琴的燃情，体会钢键的意志。"
+        },
+        {
+            "id": 5,
+            "adType": 0,
+            "name": "［轻音乐纯享］何人都有孤独之时",
+            "coverImgUrl": "https://p1.music.126.net/crkL3Q5J1I6vm59Ufy8qNw==/18951182416678231.jpg?param=200y200",
+            "playCount": 99244,
+            "trackCount": 107,
+            "creator": "雾之风铃",
+            "description": "宁静无人的黄昏，满天的繁星，一望无际的海岸线，远方的帆船，橘黄的夕阳，被染色的天空……"
+        },
+        {
+            "id": 6,
+            "adType": 0,
+            "name": "「纯音乐」“细细的水雾就扯天连地”",
+            "coverImgUrl": "https://p1.music.126.net/0ddwGQwAEa8rY8ifOTF8LA==/109951173082076827.jpg?param=200y200",
+            "playCount": 17584,
+            "trackCount": 107,
+            "creator": "久别盛夏",
+            "description": " “你眼睛的面积一定小于湖，你也很少哭，可为什么坐在你面前，就像站在湖边，细细的水雾就扯天连地” 这个歌单算是我成长的一些心理过程吧，可以明显感受出前面的歌很压抑，痛苦但又夹杂着一点希望。到后面曲风就比较明朗了。"
+        }
+    ]
+}

@@ -175,6 +175,9 @@ class _CateInfoListViewState extends State<CateInfoListView> {
       child: CustomScrollView(
         // spacing: 10,
         slivers: [
+          // SliverOverlapInjector(
+          //   handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+          // ),
           if (widget.listViewItem.defaultWidget != null &&
               widget.listViewItem.item.listStructure.contains(
                 ListStructure.defaultWidget,
@@ -203,11 +206,19 @@ class _CateInfoListViewState extends State<CateInfoListView> {
                         '歌单 * ${item.trackCount}首 * ${item.creator}',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.grey
+                        )
                       )
                     : Text(
                         item.description,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.grey
+                        )
                       ),
                 description: item.description,
                 btnTap: widget.listViewItem.btnTap,
@@ -259,12 +270,14 @@ class _CateInfoListViewState extends State<CateInfoListView> {
                 ListStructure.noticWidget,
             ))
               SliverPersistentHeader(
+                pinned: true,
                 delegate: NoticeItem(),
               ),
             if(widget.listViewItem.recommendList.isNotEmpty && widget.listViewItem.item.listStructure.contains(
                 ListStructure.recommendWidget,
             ))
               SliverPersistentHeader(
+                // pinned: true,
                 delegate: RecommendList(
                   recommendList: widget.listViewItem.recommendList,
                   cateType: widget.listViewItem.cateType,
@@ -376,8 +389,8 @@ class _ListItemState extends State<ListItem> {
         spacing: 10,
         children: [
           SizedBox(
-            width: 80,
-            height: 80,
+            width: 70,
+            height: 70,
             child: Stack(
               children: [
                 ClipRRect(
@@ -389,8 +402,8 @@ class _ListItemState extends State<ListItem> {
                       'sec-ch-ua-platform': '"Windows"',
                       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36 Edg/153.0.0.0',
                     },
-                    width: 80,
-                    height: 80,
+                    width: 70,
+                    height: 70,
                     errorWidget: (context, url, error) => Icon(Icons.error),
                     errorListener: (Object e) {
                       print(e);

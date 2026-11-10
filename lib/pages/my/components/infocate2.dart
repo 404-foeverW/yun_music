@@ -71,6 +71,7 @@ class InfoCate extends SliverPersistentHeaderDelegate {
           key: headerKey,
           decoration: BoxDecoration(
             color: Colors.white,
+            // color: Colors.transparent,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(radius),
               topRight: Radius.circular(radius),

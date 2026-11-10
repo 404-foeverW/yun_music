@@ -35,7 +35,13 @@ class Cate {
   // 过滤器属性
   List<int> filterType;
   List<Cate>? children; // 子分类
-  Widget Function(List<CateInfo>, Cate, {List<CateInfo> rencentlist, List<CateInfo> recommendlist})? listView;
+  Widget Function(
+    List<CateInfo>,
+    Cate, {
+    List<CateInfo> rencentlist,
+    List<CateInfo> recommendlist,
+  })?
+  listView;
   PageController? innerController;
   List<ListStructure> listStructure;
 
@@ -110,10 +116,15 @@ class _MyPageTState extends State<MyPageT> {
     if (subCurrentIndex.value == index) return;
     subCurrentIndex.value = index;
     _isSubAnimatingPage = true;
-    cateList[currentIndex.value].innerController!.animateToPage(index,duration: const Duration(milliseconds: 300),
-      curve: Curves.linear,).then((_) {
-        _isSubAnimatingPage = false;
-      });
+    cateList[currentIndex.value].innerController!
+        .animateToPage(
+          index,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.linear,
+        )
+        .then((_) {
+          _isSubAnimatingPage = false;
+        });
     // _innerController.jumpToPage(index);
     // setState(() {
     //   subCurrentIndex.value = index;
@@ -131,151 +142,214 @@ class _MyPageTState extends State<MyPageT> {
       title: '音乐',
       children: [
         Cate(
-          title: '近期', 
-          iconPath: 'lib/assets/icon/lock.svg', 
+          title: '近期',
+          iconPath: 'lib/assets/icon/lock.svg',
           filterType: [0, 1],
-          listStructure: const [ListStructure.defaultWidget, ListStructure.listItem, ListStructure.operatorWidgets, ListStructure.recommendWidget, ListStructure.noticWidget]
+          listStructure: const [
+            ListStructure.defaultWidget,
+            ListStructure.listItem,
+            ListStructure.operatorWidgets,
+            ListStructure.recommendWidget,
+            ListStructure.noticWidget,
+          ],
         ),
         Cate(
-          title: '创建', 
-          noticNum: 3, 
+          title: '创建',
+          noticNum: 3,
           isShowNotic: true,
           filterType: [1],
-          listStructure: const [ListStructure.defaultWidget, ListStructure.listItem, ListStructure.operatorWidgets]
+          listStructure: const [
+            ListStructure.defaultWidget,
+            ListStructure.listItem,
+            ListStructure.operatorWidgets,
+          ],
         ),
         Cate(
-          title: '收藏', 
-          noticNum: 30, 
+          title: '收藏',
+          noticNum: 30,
           isShowNotic: true,
           filterType: [0],
-          listStructure: const [ListStructure.listItem]
+          listStructure: const [ListStructure.listItem],
         ),
       ],
       innerController: PageController(),
-      listView: (
-        List<CateInfo> list, 
-        Cate item,
-        {
-          List<CateInfo> rencentlist = const [],
-          List<CateInfo> recommendlist = const []
-        }
-      ) => CateInfoListView(
-        listViewItem: ListViewItem(
-          item: item,
-          list: list,
-          recentList: rencentlist,
-          recommendList: recommendlist,
-          requestApi: getRencentInfo,
-          params: {'type': 0},
-          cateType: 0,
-          customButton: SvgPicture.asset(
-            'lib/assets/icon/listdot.svg',
-            width: 20,
-            height: 20,
+      listView:
+          (
+            List<CateInfo> list,
+            Cate item, {
+            List<CateInfo> rencentlist = const [],
+            List<CateInfo> recommendlist = const [],
+          }) => CateInfoListView(
+            listViewItem: ListViewItem(
+              item: item,
+              list: list,
+              recentList: rencentlist,
+              recommendList: recommendlist,
+              requestApi: getRencentInfo,
+              params: {'type': 0},
+              cateType: 0,
+              customButton: SvgPicture.asset(
+                'lib/assets/icon/listdot.svg',
+                width: 20,
+                height: 20,
+              ),
+              onTap: () {},
+              btnTap: () {},
+              defaultWidget: DefaultWidget(
+                picUrl: 'http://p2.music.126.net/ePvxkY3op1VeUoWWB2W_BQ==/109951172387753409.jpg?param=130y130',
+                title: '我喜欢的音乐',
+                overlay: SvgPicture.asset(
+                  'lib/assets/icon/aixin.svg',
+                  width: 35,
+                  height: 35,
+                  color: Colors.white,
+                ),
+                subTitle: Text(
+                  '161首 * 1216次播放',
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+                customButton: HeartBeat(),
+              ),
+              operatorWidgets: [
+                OperatorWidget(
+                  icon: Icon(
+                    CupertinoIcons.chart_bar_square_fill,
+                    color: const Color.fromARGB(255, 158, 157, 157),
+                  ),
+                  title: '听歌排行',
+                  subTitle: '累计听歌1123首歌',
+                  onTap: () {},
+                ),
+                OperatorWidget(
+                  icon: Icon(
+                    CupertinoIcons.plus,
+                    size: 20,
+                    color: const Color.fromARGB(255, 158, 157, 157),
+                  ),
+                  title: '新建歌单',
+                  onTap: () {},
+                ),
+                OperatorWidget(
+                  icon: SvgPicture.asset(
+                    'lib/assets/icon/daoru.svg',
+                    width: 20,
+                    height: 20,
+                    color: const Color.fromARGB(255, 158, 157, 157),
+                  ),
+                  title: '导入外部歌单',
+                  subTitle: '轻松导入其他APP里的歌单',
+                  onTap: () {},
+                ),
+              ],
+            ),
           ),
-          onTap: () {},
-          btnTap: () {},
-          defaultWidget: DefaultWidget(
-            picUrl: 'http://p2.music.126.net/ePvxkY3op1VeUoWWB2W_BQ==/109951172387753409.jpg?param=130y130',
-            title: '我喜欢的音乐',
-            overlay: SvgPicture.asset(
-              'lib/assets/icon/aixin.svg',
-              width: 35,
-              height: 35,
-              color: Colors.white,
-            ),
-            subTitle: Text(
-              '161首 * 1216次播放',
-              style: TextStyle(fontSize: 12, color: Colors.grey),
-            ),
-            customButton: HeartBeat(),
-          ),
-          operatorWidgets: [
-            OperatorWidget(
-              icon: Icon(CupertinoIcons.chart_bar_square_fill, color: const Color.fromARGB(255, 158, 157, 157)),
-              title: '听歌排行',
-              subTitle: '累计听歌1123首歌',
-              onTap: () {},
-            ),
-            OperatorWidget(
-              icon: Icon(CupertinoIcons.plus, size: 20, color: const Color.fromARGB(255, 158, 157, 157)),
-              title: '新建歌单',
-              onTap: () {},
-            ),
-            OperatorWidget(
-              icon: SvgPicture.asset('lib/assets/icon/daoru.svg', width: 20, height: 20, color: const Color.fromARGB(255, 158, 157, 157)),
-              title: '导入外部歌单',
-              subTitle: '轻松导入其他APP里的歌单',
-              onTap: () {},
-            ),
-          ],
-        ),
-      ),
     ),
     Cate(
       title: '播客',
       children: [
-        Cate(title: '全部', noticNum: 0, isShowNotic: true),
-        Cate(title: '播客', noticNum: 3, isShowNotic: true),
-        Cate(title: '有声书', noticNum: 30, isShowNotic: true),
-      ],
-      innerController: PageController(),
-      listView: (
-        List<CateInfo> list, 
-        Cate item,
-        {List<CateInfo> rencentlist = const [], List<CateInfo> recommendlist = const []}
-      ) => CateInfoListView(
-        listViewItem: ListViewItem(
-          item: item,
-          list: list,
-          recentList: rencentlist,
-          recommendList: recommendlist,
-          requestApi: getRencentInfo,
-          params: {'type': 0},
-          cateType: 0,
-          customButton: SvgPicture.asset(
-            'lib/assets/icon/listdot.svg',
-            width: 20,
-            height: 20,
-          ),
-          onTap: () {},
-          btnTap: () {},
-          defaultWidget: DefaultWidget(
-            picUrl: 'http://p2.music.126.net/ePvxkY3op1VeUoWWB2W_BQ==/109951172387753409.jpg?param=130y130',
-            title: '我喜欢的音乐',
-            overlay: SvgPicture.asset(
-              'lib/assets/icon/aixin.svg',
-              width: 35,
-              height: 35,
-              color: Colors.white,
-            ),
-            subTitle: Text(
-              '161首 * 1216次播放',
-              style: TextStyle(fontSize: 12, color: Colors.grey),
-            ),
-            customButton: HeartBeat(),
-          ),
-          operatorWidgets: [
-            OperatorWidget(
-              icon: Icon(CupertinoIcons.chart_bar_square_fill, color: const Color.fromARGB(255, 158, 157, 157)),
-              title: '听歌排行',
-              subTitle: '累计听歌1123首歌',
-              onTap: () {},
-            ),
-            OperatorWidget(
-              icon: Icon(CupertinoIcons.plus, size: 20, color: const Color.fromARGB(255, 158, 157, 157)),
-              title: '新建歌单',
-              onTap: () {},
-            ),
-            OperatorWidget(
-              icon: SvgPicture.asset('lib/assets/icon/daoru.svg', width: 20, height: 20, color: const Color.fromARGB(255, 158, 157, 157)),
-              title: '导入外部歌单',
-              subTitle: '轻松导入其他APP里的歌单',
-              onTap: () {},
-            ),
+        Cate(
+          title: '全部', 
+          noticNum: 0, 
+          isShowNotic: true,
+          listStructure: const [
+            ListStructure.defaultWidget,
+            ListStructure.listItem,
+            ListStructure.operatorWidgets,
+            ListStructure.recommendWidget,
+            ListStructure.rencentlistWidget,
           ],
         ),
-      ),
+        Cate(
+          title: '播客', 
+          noticNum: 3, 
+          isShowNotic: true,
+          listStructure: const [
+            ListStructure.listItem,
+            ListStructure.operatorWidgets,
+            ListStructure.rencentlistWidget,
+          ],
+        ),
+        Cate(
+          title: '有声书', 
+          noticNum: 30, 
+          isShowNotic: true,
+          listStructure: const [
+            ListStructure.listItem,
+            ListStructure.operatorWidgets,
+          ]
+        ),
+      ],
+      innerController: PageController(),
+      listView:
+          (
+            List<CateInfo> list,
+            Cate item, {
+            List<CateInfo> rencentlist = const [],
+            List<CateInfo> recommendlist = const [],
+          }) => CateInfoListView(
+            listViewItem: ListViewItem(
+              item: item,
+              list: list,
+              recentList: rencentlist,
+              recommendList: recommendlist,
+              requestApi: getRencentInfo,
+              params: {'type': 0},
+              cateType: 0,
+              customButton: SvgPicture.asset(
+                'lib/assets/icon/listdot.svg',
+                width: 20,
+                height: 20,
+              ),
+              onTap: () {},
+              btnTap: () {},
+              defaultWidget: DefaultWidget(
+                picUrl: 'http://p2.music.126.net/ePvxkY3op1VeUoWWB2W_BQ==/109951172387753409.jpg?param=130y130',
+                title: '我喜欢的音乐',
+                overlay: SvgPicture.asset(
+                  'lib/assets/icon/aixin.svg',
+                  width: 35,
+                  height: 35,
+                  color: Colors.white,
+                ),
+                subTitle: Text(
+                  '161首 * 1216次播放',
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+                customButton: HeartBeat(),
+              ),
+              operatorWidgets: [
+                OperatorWidget(
+                  icon: Icon(
+                    CupertinoIcons.chart_bar_square_fill,
+                    color: const Color.fromARGB(255, 158, 157, 157),
+                  ),
+                  title: '听歌排行',
+                  subTitle: '累计听歌1123首歌',
+                  onTap: () {},
+                ),
+                OperatorWidget(
+                  icon: Icon(
+                    CupertinoIcons.plus,
+                    size: 20,
+                    color: const Color.fromARGB(255, 158, 157, 157),
+                  ),
+                  title: '新建歌单',
+                  onTap: () {},
+                ),
+                OperatorWidget(
+                  icon: SvgPicture.asset(
+                    'lib/assets/icon/daoru.svg',
+                    width: 20,
+                    height: 20,
+                    color: const Color.fromARGB(255, 158, 157, 157),
+                  ),
+                  title: '导入外部歌单',
+                  subTitle: '轻松导入其他APP里的歌单',
+                  onTap: () {},
+                ),
+              ],
+            ),
+          ),
     ),
   ];
 
@@ -319,8 +393,40 @@ class _MyPageTState extends State<MyPageT> {
         ),
         child: NestedScrollView(
           controller: scrollController,
+          // floatHeaderSlivers: true,
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
+              // SliverOverlapAbsorber(
+              //   handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+              //     context,
+              //   ),
+              //   sliver: SliverMainAxisGroup(
+              //     slivers: [
+              //       SliverPersistentHeader(
+              //         pinned: true,
+              //         delegate: HeaderPart(
+              //           minExtentHeight: minExtentHeight,
+              //           statusBarHeight: deviceInfo.statusBarHeight,
+              //           isPinnedNotifier: _isPinnedNotifier,
+              //         ),
+              //       ),
+              //       SliverToBoxAdapter(child: UserInfoBody()),
+              //       SliverPersistentHeader(
+              //         pinned: true,
+              //         delegate: InfoCate(
+              //           currentIndex: currentIndex,
+              //           subCurrentIndex: subCurrentIndex,
+              //           onTabChange: setCurrentIndex,
+              //           onSubTabChange: setSubCurrentIndex,
+              //           minExtentHeight: minExtentHeight + 45,
+              //           isPinnedNotifier: _isPinnedNotifier,
+              //           headerKey: key,
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+
               SliverPersistentHeader(
                 pinned: true,
                 delegate: HeaderPart(
@@ -342,8 +448,27 @@ class _MyPageTState extends State<MyPageT> {
                   headerKey: key,
                 ),
               ),
+
+              // SliverPersistentHeader(
+              //   pinned: true,
+              //   delegate: ContentPH(
+              //     carouselController: _controller,
+              //     minExtentHeight: deviceInfo.height,
+              //     currentIndex: currentIndex,
+              //     subCurrentIndex: subCurrentIndex,
+              //     onTabChange: setCurrentIndex,
+              //     onSubTabChange: setSubCurrentIndex,
+              //     cateList: cateList,
+              //     requestApi: getRencentInfo,
+              //     requestRecommendApi: getRecommendInfo,
+              //     recommendParams: {'type': 0},
+              //     params: {'type': 0},
+              //     isStopChange: () => !_isSubAnimatingPage,
+              //   )
+              // )
             ];
           },
+          // body: Container()
           body: Catecontent(
             carouselController: _controller,
             // innerController: _innerController,
@@ -351,7 +476,8 @@ class _MyPageTState extends State<MyPageT> {
             //     deviceInfo.height -
             //     deviceInfo.statusBarHeight -
             //     (minExtentHeight + 45),
-            minExtentHeight: deviceInfo.height,
+            // minExtentHeight: deviceInfo.height,
+            minExtentHeight: deviceInfo.height - deviceInfo.statusBarHeight - (minExtentHeight + 45 + minExtentHeight),
             currentIndex: currentIndex,
             subCurrentIndex: subCurrentIndex,
             onTabChange: setCurrentIndex,
@@ -386,9 +512,10 @@ Future getRencentInfo(Map<String, dynamic> params) async {
   List<CateInfo> data = list.map((e) => CateInfo.fromJson(e)).toList();
   return data;
 }
+
 Future getRecommendInfo(Map<String, dynamic> params) async {
   final String jsonStr = await rootBundle.loadString(
-    'lib/assets/json/cateInfoMusicList.json',
+    'lib/assets/json/recommendMusicList.json',
   );
   final Map<String, dynamic> json = jsonDecode(jsonStr) as Map<String, dynamic>;
   final dynamic rawData = json['data'];

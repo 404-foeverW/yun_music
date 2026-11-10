@@ -31,6 +31,84 @@ import 'package:yun_music/pages/my/index2.dart';
 //     this.listView,
 //   });
 // }
+class ContentPH extends SliverPersistentHeaderDelegate {
+  final bool Function() isStopChange;
+  final List<Cate> cateList;
+  final double minExtentHeight;
+  final CarouselSliderController carouselController;
+  // final PageController innerController;
+  final RxInt currentIndex;
+  final RxInt subCurrentIndex;
+  final void Function(int index) onSubTabChange;
+  final void Function(int index) onTabChange;
+  // 请求的api地址
+  final Future Function(Map<String, dynamic>) requestApi;
+  // 请求最近收听api
+  final Future Function(Map<String, dynamic>)? requestRecentApi;
+  // 请求推荐api
+  final Future Function(Map<String, dynamic>)? requestRecommendApi;
+  // 最近收听参数
+  final Map<String, dynamic>? recentParams;
+  // 推荐参数
+  final Map<String, dynamic>? recommendParams;
+  // 请求参数
+  final Map<String, dynamic> params;
+  const ContentPH({
+    required this.isStopChange,
+    required this.minExtentHeight,
+    required this.carouselController,
+    // required this.innerController,
+    required this.currentIndex,
+    required this.subCurrentIndex,
+    required this.onSubTabChange,
+    required this.onTabChange,
+    required this.cateList,
+    required this.requestApi,
+    this.requestRecentApi,
+    this.recentParams,
+    this.params = const {},
+    this.requestRecommendApi,
+    this.recommendParams,
+  });
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.red, width: 1),
+      ),
+      child: Catecontent(
+        carouselController: carouselController,
+        minExtentHeight: minExtentHeight,
+        currentIndex: currentIndex,
+        subCurrentIndex: subCurrentIndex,
+        onTabChange: onTabChange,
+        onSubTabChange: onSubTabChange,
+        cateList: cateList,
+        requestApi: getRencentInfo,
+        requestRecommendApi: getRecommendInfo,
+        recommendParams: recommendParams,
+        params: params,
+        isStopChange: isStopChange,
+      ),
+    );
+  }
+
+  @override
+  double get maxExtent => minExtentHeight;
+
+  @override
+  double get minExtent => minExtentHeight;
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+    return false;
+  }
+}
 
 class Catecontent extends StatefulWidget {
   final bool Function() isStopChange;
@@ -92,7 +170,9 @@ class _CatecontentState extends State<Catecontent> {
       _rencentlist = await widget.requestRecentApi!(widget.recentParams!);
     }
     if (widget.requestRecommendApi != null) {
-      _recommendlist = await widget.requestRecommendApi!(widget.recommendParams!);
+      _recommendlist = await widget.requestRecommendApi!(
+        widget.recommendParams!,
+      );
     }
     _loading = false;
     _loaded = true;
@@ -108,7 +188,11 @@ class _CatecontentState extends State<Catecontent> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      // color: Colors.white,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        // border: Border.all(color: Colors.red, width: 1)
+      ),
       child: CarouselSlider.builder(
         carouselController: widget.carouselController, // 绑定
         options: CarouselOptions(
@@ -287,7 +371,7 @@ class _CarouselContentState extends State<CarouselContent> {
         physics: const ClampingScrollPhysics(),
         itemCount: widget.cateList!.length,
         onPageChanged: (index) {
-          if(!widget.isStopChange()) return;
+          if (!widget.isStopChange()) return;
           _innerIndex = index;
           widget.setIndex(index);
           // widget.index = index; // 不setState

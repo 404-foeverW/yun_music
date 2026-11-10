@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:yun_music/pages/my/components/listview.dart';
 import 'package:yun_music/store/index.dart';
+import 'package:yun_music/utils/index.dart';
 
 class RecommendList extends SliverPersistentHeaderDelegate {
   final deviceInfo = Get.find<DeviceInfoService>();
@@ -42,12 +43,13 @@ class RecommendList extends SliverPersistentHeaderDelegate {
                   ),
                 ),
               ),
-              Icon(CupertinoIcons.xmark)
+              Icon(CupertinoIcons.xmark, size: 20, color: Colors.grey)
             ]
           ),
           ListView.builder(
             itemCount: recommendList.length,
             shrinkWrap: true,
+            padding: EdgeInsets.only(top: 10),
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               return ListItem(
@@ -55,9 +57,13 @@ class RecommendList extends SliverPersistentHeaderDelegate {
                 picUrl: recommendList[index].coverImgUrl,
                 title: recommendList[index].name,
                 subTitle: Text(
-                  recommendList[index].description,
-                  maxLines: 2,
+                  '${recommendList[index].trackCount}首 * ${getPlayCount(recommendList[index].playCount)}次播放',
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.grey
+                  )
                 ),
                 description: recommendList[index].description,
                 btnTap: btnTap,
@@ -71,10 +77,18 @@ class RecommendList extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => deviceInfo.height * 0.7;
+  // double get maxExtent => deviceInfo.height * 0.7;
+  // double get maxExtent => deviceInfo.height - deviceInfo.statusBarHeight - 130;
+  double get maxExtent {
+    // 留出 HeaderPart + InfoCate 的空间，避免 extent 超过 viewport
+    final available = deviceInfo.height - deviceInfo.statusBarHeight - 215;
+    return available * 0.8; // 或一个合适的固定值
+  }
 
   @override
-  double get minExtent => deviceInfo.height * 0.7;
+  // double get minExtent => deviceInfo.height * 0.7;
+  double get minExtent => maxExtent;
+
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
