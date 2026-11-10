@@ -34,7 +34,7 @@ class _TabBarListState extends State<TabBarList> {
 
   List<Map<String, dynamic>> tabBarList = [
     {'title': '首页', 'index': 0, 'path': '/'},
-    {'title': '搜索', 'index': 1},
+    {'title': '搜索', 'index': 1, 'path': '/searchPage'},
     {'title': '笔记', 'index': 2},
     {'title': '我的', 'index': 3, 'path': '/my'},
   ];
