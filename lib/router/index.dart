@@ -7,6 +7,7 @@ import 'package:yun_music/pages/login/index.dart';
 import 'package:yun_music/pages/my/index.dart';
 import 'package:yun_music/pages/ranking/index.dart';
 import 'package:yun_music/pages/recommendmusic/index.dart';
+import 'package:yun_music/pages/search/index.dart';
 import 'package:yun_music/pages/searchpage/index.dart';
 
 Widget getRouterWidgets() {
@@ -23,9 +24,10 @@ Map<String, Widget Function(BuildContext)> getRouterMap() {
     '/bgplaylist': (context) => BackgroundPlaylistPage(),
     '/ablum': (context) => AlbumPage(),
     '/ranking': (context) => RankingPage(),
-    // '/my': (context) => MyPage(),
-    '/my': (context) => MyPageT(),
+    '/my': (context) => MyPage(),
+    // '/my': (context) => MyPageT(),
     '/searchPage': (context) => SearchPage(),
+    '/search': (context) => Search(),
     // '/': (context) => LoginPage(),
     '/': (context) => HomePage()
   };

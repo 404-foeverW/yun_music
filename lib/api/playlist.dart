@@ -203,3 +203,16 @@ Future<RankingDetail> getRankingListDetail(String id) async {
   Map<String, dynamic> res = await diorequest.get(MusicApiUrl.playlistDetail, params: {"id": id});
   return RankingDetail.fromJson(res['playlist']);
 }
+
+// 获取推荐歌单
+Future<List<PlayList>> getRecommendPlayList(Map<String, dynamic> params) async {
+  List<dynamic> results = await diorequest.get(MusicApiUrl.recommendPlayList, params: params);
+  // List<dynamic> results = res['result'];
+
+  return results.map((item) {
+    return PlayList.fromJson({
+      ...item,
+      'coverImgUrl': item['picUrl'],
+    });
+  }).toList();
+}

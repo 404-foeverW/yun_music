@@ -16,7 +16,7 @@ class _SearchCateState extends State<SearchCate> {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       child: GridView.count(
-        padding: const EdgeInsets.only(top: 10),
+        padding: const EdgeInsets.only(top: 10, bottom: 0),
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         crossAxisCount: 2,
@@ -100,8 +100,8 @@ class _CateItemState extends State<CateItem> {
                   left: 22,
                   top: 5,
                   child: Container(
-                    width: 80,
-                    height: 80,
+                    width: 90,
+                    height: 90,
                     decoration: BoxDecoration(
                       color: Color.fromRGBO(0, 0, 0, 0.3),
                       borderRadius: BorderRadius.circular(5),
@@ -121,9 +121,9 @@ class _CateItemState extends State<CateItem> {
                         'sec-ch-ua-platform': '"Windows"',
                         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36 Edg/153.0.0.0',
                       },
-                      width: 80,
-                      height: 80,
-                      fit: BoxFit.cover,
+                      width: 90,
+                      height: 90,
+                      // fit: BoxFit.cover,
                     ),
                   ),
                 ),

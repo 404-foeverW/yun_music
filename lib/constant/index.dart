@@ -15,7 +15,7 @@ class LoginApiUrl {
 }
 
 class MusicApiUrl {
-  // 不登录状态下的推荐歌单
+  // 不登录状态下的推荐新音乐
   static const String recommendMusicNL = '/personalized/newsong';
   // 获取精品歌单
   static const String highqualityMusic = '/top/playlist/highquality';
@@ -32,6 +32,8 @@ class MusicApiUrl {
   static const String songDetail = '/song/url/v1';
   // 获取专辑内容
   static const String albumDetail = '/album';
+  // 推荐歌单
+  static const String recommendPlayList = '/personalized';
 }
 
 // 不同分类对应的颜色

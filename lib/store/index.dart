@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:get/state_manager.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yun_music/viewmodel/playlist.dart';
 
 class CommonData extends GetxController {
@@ -50,5 +51,49 @@ class DeviceInfoService extends GetxService {
     statusBarHeight = view.padding.top / dpr;
     bottomSafeAreaHeight = view.padding.bottom / dpr;
     keyboardHeight = view.viewInsets.bottom / dpr;
+  }
+}
+
+class LocalData {
+  Future<SharedPreferences> _getInstance() {
+    return SharedPreferences.getInstance();
+  }
+
+  // 搜索历史
+  List<String> searchHistory = [];
+  // 设置搜索历史
+  Future<void> setSearchHistory(String value) async {
+    final pref = await _getInstance();
+    if(searchHistory.contains(value)) {
+      searchHistory.remove(value);
+      searchHistory.insert(0, value);
+    }else {
+      searchHistory.add(value);
+    }
+    pref.setStringList('searchHistory', searchHistory);
+  }
+  // 获取搜索历史
+  Future<List<String>> getSearchHistory() async {
+    final pref = await _getInstance();
+    List<String>? result = pref.getStringList('searchHistory');
+    if(result == null) {
+      pref.setStringList('searchHistory', []);
+      return [];
+    }
+    return result;
+  }
+  // 清除搜索历史
+  Future<void> clearSearchHistory() async {
+    final pref = await _getInstance();
+    searchHistory = [];
+    pref.setStringList('searchHistory', []);
+  }
+  // 删除搜索历史
+  Future<void> removeSearchHistory(String value) async {
+    if(searchHistory.contains(value)) {
+      searchHistory.remove(value);
+    }
+    final pref = await _getInstance();
+    pref.setStringList('searchHistory', searchHistory);
   }
 }

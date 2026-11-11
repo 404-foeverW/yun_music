@@ -74,8 +74,8 @@ class _HeaderItemsState extends State<HeaderItems> {
   );
   final SvgPicture _search = SvgPicture.asset(
     'lib/assets/icon/sousuo1.svg',
-    width: 30,
-    height: 30,
+    width: 25,
+    height: 25,
   );
 
   @override
@@ -132,7 +132,9 @@ class _HeaderItemsState extends State<HeaderItems> {
                 }).toList(),
               ),
             ),
-            GestureDetector(onTap: () {}, child: _search),
+            GestureDetector(onTap: () {
+              Navigator.pushNamed(context, '/search');
+            }, child: _search),
           ],
         ),
       ),

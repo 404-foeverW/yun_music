@@ -709,7 +709,7 @@ class Creator {
       city: json['city'] ?? 0,
       birthday: json['birthday'] ?? 0,
       userId: json['userId'] ?? 0,
-      userType: json['userType'] ?? "",
+      userType: json['userType'] ?? 0,
       nickname: json['nickname'] ?? "",
       signature: json['signature'] ?? "",
       description: json['description'] ?? "",
