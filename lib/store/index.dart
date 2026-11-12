@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:ui';
 
 import 'package:get/state_manager.dart';
@@ -62,14 +64,19 @@ class LocalData {
   // 搜索历史
   List<String> searchHistory = [];
   // 设置搜索历史
-  Future<void> setSearchHistory(String value) async {
+  Future<void> setSearchHistory({String? value, List<String>? list}) async {
+    print(value);
     final pref = await _getInstance();
-    if(searchHistory.contains(value)) {
+    if(list != null) {
+      searchHistory = list;
+    }
+    if(searchHistory.contains(value) && value != null) {
       searchHistory.remove(value);
       searchHistory.insert(0, value);
-    }else {
+    }else if(value != null) {
       searchHistory.add(value);
     }
+    print(searchHistory);
     pref.setStringList('searchHistory', searchHistory);
   }
   // 获取搜索历史
@@ -90,9 +97,11 @@ class LocalData {
   }
   // 删除搜索历史
   Future<void> removeSearchHistory(String value) async {
+    print(searchHistory);
     if(searchHistory.contains(value)) {
       searchHistory.remove(value);
     }
+    print(searchHistory);
     final pref = await _getInstance();
     pref.setStringList('searchHistory', searchHistory);
   }
