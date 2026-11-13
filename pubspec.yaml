@@ -48,6 +48,7 @@ dependencies:
   flutter_picker_plus: ^1.6.0
   cached_network_image: ^4.0.6
   sidebarx: ^0.17.2
+  modal_bottom_sheet: ^3.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

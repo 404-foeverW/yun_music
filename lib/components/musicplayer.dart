@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:yun_music/components/musiclistpop.dart';
+import 'package:yun_music/pages/musicdetail/index.dart';
 import 'package:yun_music/store/musicplay.dart';
 import 'package:yun_music/utils/index.dart';
 import 'package:yun_music/viewmodel/index.dart';
@@ -24,7 +26,7 @@ class MusicPlayController extends StatefulWidget {
     this.current,
     required this.player,
     this.fristDuration,
-    this.playerStyle
+    this.playerStyle,
   });
 
   @override
@@ -50,7 +52,6 @@ class _MusicPlayControllerState extends State<MusicPlayController> {
   bool _isAnimatingCarousel = false;
 
   PlayerStyle get _style => widget.playerStyle ?? PlayerStyle.getDefault;
-
 
   // List<Map<String, dynamic>> style = [
   //   {
@@ -82,7 +83,6 @@ class _MusicPlayControllerState extends State<MusicPlayController> {
   //     'listIconColor': 'white'
   //   },
   // ];
-
 
   // late GradientCircularProgress progress;
 
@@ -147,36 +147,44 @@ class _MusicPlayControllerState extends State<MusicPlayController> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
-            child: Row(
-              spacing: 10,
-              children: [
-                Container(
-                  width: 50,
-                  height: 50,
-                  padding: EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    // color: Colors.black,
+            child: GestureDetector(
+              onTap: () {
+                showMaterialModalBottomSheet(
+                  expand: true,
+                  context: context,
+                  builder: (context) => MusicDetail(),
+                );
+              },
+              child: Row(
+                spacing: 10,
+                children: [
+                  Container(
+                    width: 50,
+                    height: 50,
+                    padding: EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      // color: Colors.black,
+                    ),
+                    child: Obx(() {
+                      final song = widget.player.currentSong.value;
+                      final coverUrl = song?.coverUrl ?? '';
+                      // if (coverUrl.isEmpty) {
+                      //   return _placeholder();   // 没有封面时显示占位
+                      // }
+                      return ClipOval(
+                        child: Image.network(
+                          'https://images.weserv.nl/?url=${Uri.encodeComponent(coverUrl)}',
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return _placeholder();
+                          },
+                        ),
+                      );
+                    }),
                   ),
-                  child: Obx(() {
-                    final song = widget.player.currentSong.value;
-                    final coverUrl = song?.coverUrl ?? '';
-                    // if (coverUrl.isEmpty) {
-                    //   return _placeholder();   // 没有封面时显示占位
-                    // }
-                    return ClipOval(
-                      child: Image.network(
-                        'https://images.weserv.nl/?url=${Uri.encodeComponent(coverUrl)}',
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return _placeholder();
-                        },
-                      ),
-                    );
-                  }),
-                ),
-                Expanded(
-                  child: Obx(() {
+                  Expanded(
+                    child: Obx(() {
                       final playlist = widget.player.playlist;
                       // 列表为空时不构建
                       if (playlist.isEmpty) {
@@ -216,7 +224,8 @@ class _MusicPlayControllerState extends State<MusicPlayController> {
                             // 程序化滚动（animateToPage 触发的）直接忽略，不参与业务
                             if (_isAnimatingCarousel) return;
                             if (index == _currentMusicIndex) return;
-                            if (reason != CarouselPageChangedReason.manual) return;
+                            if (reason != CarouselPageChangedReason.manual)
+                              return;
                             final op = ++_operationId;
                             _currentMusicIndex = index;
                             if (widget.player.currentIndex.value != index) {
@@ -230,10 +239,10 @@ class _MusicPlayControllerState extends State<MusicPlayController> {
                           },
                         ),
                       );
-                    
-                  })
-                ),
-              ],
+                    }),
+                  ),
+                ],
+              ),
             ),
           ),
           // PlayerBtn(),
@@ -244,20 +253,12 @@ class _MusicPlayControllerState extends State<MusicPlayController> {
               progress: widget.player.progress, // 0.0 ~ 1.0
               isPlaying: widget.player.isPlaying.value,
               onTap: widget.player.togglePlayPause,
-              style: style
+              style: style,
             );
           }),
           Obx(() {
-            return MusicList(
-              playList: widget.player.playlist,
-              style: style
-            );
+            return MusicList(playList: widget.player.playlist, style: style);
           }),
-          // MusicList(
-          //   playList: widget.player.playlist,
-          //   style: style
-          // )
-          // MusicList()
         ],
       ),
     );
@@ -282,7 +283,7 @@ class GradientCircularProgress extends StatelessWidget {
     required this.progress,
     required this.isPlaying,
     required this.onTap,
-    required this.style
+    required this.style,
   });
 
   @override
@@ -296,7 +297,7 @@ class GradientCircularProgress extends StatelessWidget {
           painter: _GradientCirclePainter(
             progress: progress.clamp(0.0, 1.0),
             strokeWidth: strokeWidth,
-            style: style
+            style: style,
           ),
           child: SizedBox(
             width: size,
@@ -323,7 +324,11 @@ class _GradientCirclePainter extends CustomPainter {
   final double strokeWidth;
   final PlayerStyle style;
 
-  _GradientCirclePainter({required this.progress, required this.strokeWidth, required this.style});
+  _GradientCirclePainter({
+    required this.progress,
+    required this.strokeWidth,
+    required this.style,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -380,7 +385,6 @@ class MusicList extends StatefulWidget {
 }
 
 class _MusicListState extends State<MusicList> {
-
   @override
   Widget build(BuildContext context) {
     String suffixName = widget.style.listIconColor;
