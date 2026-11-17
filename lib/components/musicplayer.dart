@@ -149,6 +149,9 @@ class _MusicPlayControllerState extends State<MusicPlayController> {
           Expanded(
             child: GestureDetector(
               onTap: () {
+                if(widget.player.length == 0) {
+                  return;
+                }
                 showMaterialModalBottomSheet(
                   expand: true,
                   context: context,

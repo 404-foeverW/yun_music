@@ -1,17 +1,28 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:yun_music/components/loopText.dart';
+import 'package:yun_music/store/musicplay.dart';
 
 class InfoBox extends StatefulWidget {
   final double width;
   final Color bgColor;
-  const InfoBox({super.key, required this.width, required this.bgColor});
+  final Rxn<Song> currentmusic;
+  const InfoBox({
+    super.key,
+    required this.width,
+    required this.bgColor,
+    required this.currentmusic,
+  });
 
   @override
   State<InfoBox> createState() => _InfoBoxState();
 }
 
 class _InfoBoxState extends State<InfoBox> {
+  bool isLove = false;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -35,7 +46,7 @@ class _InfoBoxState extends State<InfoBox> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ScrollTitle(
-                  title: 'To Be A Man (Mega Remix)',
+                  title: widget.currentmusic.value?.title ?? '',
                   icon: Container(
                     padding: EdgeInsets.symmetric(vertical: 2, horizontal: 5),
                     decoration: BoxDecoration(
@@ -53,7 +64,7 @@ class _InfoBoxState extends State<InfoBox> {
                   showIcon: true,
                 ),
                 ScrollTitle(
-                  title: 'Dax / The Mediary / Shane / Skywalker DaVinci / Kaveman Brown / Hailey Dayton / Ben Becker / Brutha Rick / Romeo ThaGreatwhite / Phix / Atlus',
+                  title: widget.currentmusic.value?.artist ?? '',
                   style: TextStyle(
                     fontSize: 14,
                     color: Color.fromRGBO(255, 255, 255, 0.6),
@@ -62,10 +73,13 @@ class _InfoBoxState extends State<InfoBox> {
                   showIcon: true,
                 ),
               ],
-            )
+            ),
           ),
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              isLove = !isLove;
+              setState(() {});
+            },
             child: Badge(
               backgroundColor: widget.bgColor,
               offset: Offset(5, 0),
@@ -74,9 +88,9 @@ class _InfoBoxState extends State<InfoBox> {
                 style: TextStyle(color: Colors.white, fontSize: 12),
               ),
               child: Icon(
-                CupertinoIcons.suit_heart,
+                !isLove ? CupertinoIcons.suit_heart : CupertinoIcons.suit_heart_fill,
                 size: 35,
-                color: Colors.white,
+                color: !isLove ? Colors.white : Colors.red,
               ),
             ),
           ),
@@ -90,7 +104,7 @@ class _InfoBoxState extends State<InfoBox> {
                 style: TextStyle(color: Colors.white, fontSize: 12),
               ),
               child: SvgPicture.asset(
-                'lib/assets/icon/pinglun.svg',
+                'lib/assets/icon/pinglun-.svg',
                 width: 35,
                 height: 35,
                 color: Colors.white,
@@ -136,13 +150,16 @@ class _ScrollTitleState extends State<ScrollTitle> {
         return Flex(
           direction: Axis.horizontal,
           children: [
-            SizedBox(
-              width: maxWidth * 0.8,
-              child: Text(
-                widget.title,
-                style: widget.style,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+            // SizedBox(
+            //   width: maxWidth * 0.8,
+            //   child: LoopText(text: widget.title, textstyle: widget.style)
+            // ),
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: maxWidth * 0.8),
+              child: LoopText(
+                text: widget.title,
+                textstyle: widget.style,
+                width: maxWidth * 0.8,
               ),
             ),
             SizedBox(width: 10),

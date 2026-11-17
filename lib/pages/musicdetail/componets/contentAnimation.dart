@@ -4,6 +4,8 @@ import 'dart:math' as math;
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:yun_music/store/musicplay.dart';
 
 class ContentAnimation extends StatefulWidget {
   final AnimationController toneArmController;
@@ -11,6 +13,9 @@ class ContentAnimation extends StatefulWidget {
   final Animation<double> toneArmAnimation;
   final Animation<double> recordAnimation;
   final double radius;
+  final Rxn<Song> currentmusic;
+  final List<SongBrief> songList;
+
   const ContentAnimation({
     super.key,
     required this.toneArmController,
@@ -18,6 +23,8 @@ class ContentAnimation extends StatefulWidget {
     required this.toneArmAnimation,
     required this.recordAnimation,
     required this.radius,
+    required this.currentmusic,
+    required this.songList,
   });
 
   @override
@@ -36,9 +43,9 @@ class _ContentAnimationState extends State<ContentAnimation>
     return Container(
       width: deviceInfo.size.width,
       height: deviceInfo.size.height * 0.6,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.white, width: 1.2),
-      ),
+      // decoration: BoxDecoration(
+      //   border: Border.all(color: Colors.white, width: 1.2),
+      // ),
       child: Center(
         child: SizedBox(
           width: deviceInfo.size.width,
@@ -59,10 +66,10 @@ class _ContentAnimationState extends State<ContentAnimation>
                         width: width,
                         height: width,
                         decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.white.withAlpha(20),
-                            width: 1.2,
-                          ),
+                          // border: Border.all(
+                          //   color: Colors.white.withAlpha(20),
+                          //   width: 1.2,
+                          // ),
                           shape: BoxShape.circle,
                           color: Colors.white.withAlpha(10),
                         ),
@@ -100,7 +107,13 @@ class _ContentAnimationState extends State<ContentAnimation>
                                     borderRadius: BorderRadius.circular(1000),
                                     child: CachedNetworkImage(
                                       fit: BoxFit.cover,
-                                      imageUrl: 'https://images.weserv.nl/?url=https://p1.music.126.net/NDh4QW1TwPlG0QNh-0K_Lw==/109951173628365926.jpg?param=200y200',
+                                      imageUrl:
+                                          'https://images.weserv.nl/?url=${widget.currentmusic.value?.coverUrl}',
+                                      httpHeaders: {
+                                        'Referer': 'https://music.163.com/',
+                                        'sec-ch-ua-platform': '"Windows"',
+                                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36 Edg/153.0.0.0',
+                                      },
                                     ),
                                   ),
                                 ),
@@ -146,12 +159,12 @@ class _ContentAnimationState extends State<ContentAnimation>
                       child: Container(
                         width: armwith,
                         height: armHeight,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.white.withAlpha(20),
-                            width: 1.2,
-                          ),
-                        ),
+                        // decoration: BoxDecoration(
+                        //   border: Border.all(
+                        //     color: Colors.white.withAlpha(20),
+                        //     width: 1.2,
+                        //   ),
+                        // ),
                         child: Image.asset(
                           'lib/assets/icon/play_needle_play.png',
                           fit: BoxFit.cover,
