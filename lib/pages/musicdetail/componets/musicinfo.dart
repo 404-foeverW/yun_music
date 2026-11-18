@@ -45,7 +45,8 @@ class _InfoBoxState extends State<InfoBox> {
               direction: Axis.vertical,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ScrollTitle(
+                Obx(() {
+                  return ScrollTitle(
                   title: widget.currentmusic.value?.title ?? '',
                   icon: Container(
                     padding: EdgeInsets.symmetric(vertical: 2, horizontal: 5),
@@ -62,8 +63,10 @@ class _InfoBoxState extends State<InfoBox> {
                     ),
                   ),
                   showIcon: true,
-                ),
-                ScrollTitle(
+                );
+                }),
+                Obx(() {
+                  return ScrollTitle(
                   title: widget.currentmusic.value?.artist ?? '',
                   style: TextStyle(
                     fontSize: 14,
@@ -71,7 +74,8 @@ class _InfoBoxState extends State<InfoBox> {
                     fontWeight: FontWeight.bold,
                   ),
                   showIcon: true,
-                ),
+                );
+                }),
               ],
             ),
           ),

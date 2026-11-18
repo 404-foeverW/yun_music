@@ -132,3 +132,19 @@ Color darken(Color base, double amount) {
       .withLightness((hsl.lightness - amount).clamp(0.05, 1.0))
       .toColor();
 }
+
+String formatCurrentTime(Duration duration, double progress) {
+  // print('duration.inMilliseconds');
+  // print(duration);
+  final p = progress.clamp(0.0, 1.0);
+  final current = Duration(
+    milliseconds: (duration.inMilliseconds * p).round(),
+  );
+  // print('current');
+  // print(current);
+  // print(current.inMinutes);
+  // print(current.inSeconds);
+  final hours = current.inMinutes.toString().padLeft(2, '0');
+  final minutes = current.inSeconds.remainder(60).toString().padLeft(2, '0');
+  return '$hours:$minutes';
+}

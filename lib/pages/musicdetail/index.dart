@@ -8,6 +8,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:yun_music/pages/musicdetail/componets/contentAnimation.dart';
 import 'package:yun_music/pages/musicdetail/componets/controller.dart';
+import 'package:yun_music/pages/musicdetail/componets/controllerbtn.dart';
 import 'package:yun_music/pages/musicdetail/componets/freeAnimation.dart';
 import 'package:yun_music/pages/musicdetail/componets/musicinfo.dart';
 import 'package:yun_music/store/index.dart';
@@ -67,17 +68,25 @@ class _MusicDetailState extends State<MusicDetail>
     _progressController = AnimationController(
       vsync: this,
       // duration: musicduration,
+      value: player.progress,
       duration: player.duration.value,
     );
     _progressAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(parent: _progressController, curve: Curves.linear),
     );
+    if(player.isPlaying.value) {
+      _isPlaying = true;
+      _toneArmController.forward();
+      _recordController.repeat();
+      _progressController.repeat();
+    }
   }
 
   Future<void> _togglePlay() async {
     if (_toneArmAnimation.isAnimating) return;
     if (_isPlaying) {
       _isPlaying = false;
+      player.pause();
       setState(() {});
       await _toneArmController.reverse();
       if (!mounted) return;
@@ -85,6 +94,7 @@ class _MusicDetailState extends State<MusicDetail>
       _progressController.stop();
     } else {
       _isPlaying = true;
+      player.play();
       setState(() {});
       await _toneArmController.forward();
       if (!mounted) return;
@@ -93,6 +103,18 @@ class _MusicDetailState extends State<MusicDetail>
         from: player.progress
       );
     }
+  }
+  void setPlayPosition(double position, Duration duration) {
+    _progressController.value = position;
+    player.seek(duration);
+  }
+
+  void playNext() {
+    player.playNext();
+  }
+
+  void playPrev() {
+    player.playPrevious();
   }
 
   @override
@@ -184,13 +206,25 @@ class _MusicDetailState extends State<MusicDetail>
           // )
           // 信息栏
           InfoBox(width: deviceInfo.width - 30, bgColor: _color3, currentmusic: player.currentSong),
-          // 控制器
+          // 控制器-进度条
           Controller(
             currentduration: player.position,
             totalduration: player.duration,
             progressController: _progressController,
             progressAnimation: _progressAnimation,
             currentmusic: player.currentSong,
+            currentProgress: player.progress,
+            setPlayPosition: setPlayPosition
+          ),
+          SizedBox(height: 30),
+          // 控制器-按钮
+          ControllerBtns(
+            playMode: player.playMode,
+            setPlayMode: player.setPlayMode,
+            isPlaying: player.isPlaying,
+            togglePlay: _togglePlay,
+            playNext: playNext,
+            playPrev: playPrev,
           ),
           // 底部栏
           Expanded(

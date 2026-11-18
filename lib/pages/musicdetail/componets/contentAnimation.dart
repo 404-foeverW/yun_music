@@ -105,7 +105,8 @@ class _ContentAnimationState extends State<ContentAnimation>
                                   ),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(1000),
-                                    child: CachedNetworkImage(
+                                    child: Obx(() {
+                                      return CachedNetworkImage(
                                       fit: BoxFit.cover,
                                       imageUrl:
                                           'https://images.weserv.nl/?url=${widget.currentmusic.value?.coverUrl}',
@@ -114,7 +115,8 @@ class _ContentAnimationState extends State<ContentAnimation>
                                         'sec-ch-ua-platform': '"Windows"',
                                         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36 Edg/153.0.0.0',
                                       },
-                                    ),
+                                    );
+                                    }),
                                   ),
                                 ),
                                 // child: Image.asset('lib/assets/icon/play_disc_cover.png'),
