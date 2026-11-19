@@ -23,7 +23,7 @@ class MusicDetail extends StatefulWidget {
 
 class _MusicDetailState extends State<MusicDetail>
     with TickerProviderStateMixin {
-  final player = Get.find<MusicPlayer>();    
+  final player = Get.find<MusicPlayer>();
 
   final deviceInfo = Get.find<DeviceInfoService>();
   static const Color _color1 = Color.fromRGBO(211, 211, 211, 1);
@@ -74,7 +74,7 @@ class _MusicDetailState extends State<MusicDetail>
     _progressAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(parent: _progressController, curve: Curves.linear),
     );
-    if(player.isPlaying.value) {
+    if (player.isPlaying.value) {
       _isPlaying = true;
       _toneArmController.forward();
       _recordController.repeat();
@@ -84,6 +84,8 @@ class _MusicDetailState extends State<MusicDetail>
 
   Future<void> _togglePlay() async {
     if (_toneArmAnimation.isAnimating) return;
+    print('_togglePlay');
+    print(_isPlaying);
     if (_isPlaying) {
       _isPlaying = false;
       player.pause();
@@ -99,22 +101,44 @@ class _MusicDetailState extends State<MusicDetail>
       await _toneArmController.forward();
       if (!mounted) return;
       _recordController.repeat();
-      _progressController.forward(
-        from: player.progress
-      );
+      _progressController.forward(from: player.progress);
     }
   }
+
   void setPlayPosition(double position, Duration duration) {
     _progressController.value = position;
     player.seek(duration);
   }
 
-  void playNext() {
-    player.playNext();
-  }
-
-  void playPrev() {
-    player.playPrevious();
+  void changeMusic(String type) async {
+    try {
+      print('_isPlaying: $_isPlaying');
+      if (_isPlaying) {
+        await _toneArmController.reverse();
+      }
+      if (type == 'next') {
+        player.playNext();
+      } else if (type == 'prev') {
+        player.playPrevious();
+      }
+      print('重新开启动画------1');
+      print('进度条开启动画------');
+      _progressController.forward(from: 0);
+      print('唱臂开启动画------');
+      _toneArmController.forward().catchError((error) {
+        print('唱臂开启动画失败------error: $error');
+      });
+      print('唱盘开启动画------');
+      _recordController.repeat();
+      print('重新开启动画------2');
+      if (!_isPlaying) {
+        _isPlaying = true;
+        print('_isPlaying: $_isPlaying');
+        setState(() {});
+      }
+    } catch (e) {
+      print('changeMusic error: $e');
+    }
   }
 
   @override
@@ -205,7 +229,11 @@ class _MusicDetailState extends State<MusicDetail>
           //   ),
           // )
           // 信息栏
-          InfoBox(width: deviceInfo.width - 30, bgColor: _color3, currentmusic: player.currentSong),
+          InfoBox(
+            width: deviceInfo.width - 30,
+            bgColor: _color3,
+            currentmusic: player.currentSong,
+          ),
           // 控制器-进度条
           Controller(
             currentduration: player.position,
@@ -214,7 +242,7 @@ class _MusicDetailState extends State<MusicDetail>
             progressAnimation: _progressAnimation,
             currentmusic: player.currentSong,
             currentProgress: player.progress,
-            setPlayPosition: setPlayPosition
+            setPlayPosition: setPlayPosition,
           ),
           SizedBox(height: 30),
           // 控制器-按钮
@@ -223,55 +251,57 @@ class _MusicDetailState extends State<MusicDetail>
             setPlayMode: player.setPlayMode,
             isPlaying: player.isPlaying,
             togglePlay: _togglePlay,
-            playNext: playNext,
-            playPrev: playPrev,
+            changeMusic: changeMusic,
           ),
           // 底部栏
           Expanded(
-            child: Padding(padding: EdgeInsets.only(bottom: 10), child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ControllerBtn(
-                    icon: SvgPicture.asset(
-                      'lib/assets/icon/shouji.svg',
-                      width: 25,
-                      height: 25,
-                      color: Colors.white.withValues(alpha: 0.6),
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 10),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ControllerBtn(
+                      icon: SvgPicture.asset(
+                        'lib/assets/icon/shouji.svg',
+                        width: 25,
+                        height: 25,
+                        color: Colors.white.withValues(alpha: 0.6),
+                      ),
+                      onTap: () {},
                     ),
-                    onTap: () {},
-                  ),
-                  ControllerBtn(
-                    icon: SvgPicture.asset(
-                      'lib/assets/icon/woaifamingx.svg',
-                      width: 25,
-                      height: 25,
-                      color: Colors.white.withValues(alpha: 0.6),
+                    ControllerBtn(
+                      icon: SvgPicture.asset(
+                        'lib/assets/icon/woaifamingx.svg',
+                        width: 25,
+                        height: 25,
+                        color: Colors.white.withValues(alpha: 0.6),
+                      ),
+                      onTap: () {},
                     ),
-                    onTap: () {},
-                  ),
-                  ControllerBtn(
-                    icon: SvgPicture.asset(
-                      'lib/assets/icon/careful.svg',
-                      width: 25,
-                      height: 25,
-                      color: Colors.white.withValues(alpha: 0.6),
+                    ControllerBtn(
+                      icon: SvgPicture.asset(
+                        'lib/assets/icon/careful.svg',
+                        width: 25,
+                        height: 25,
+                        color: Colors.white.withValues(alpha: 0.6),
+                      ),
+                      onTap: () {},
                     ),
-                    onTap: () {},
-                  ),
-                  ControllerBtn(
-                    icon: SvgPicture.asset(
-                      'lib/assets/icon/dian1.svg',
-                      width: 25,
-                      height: 25,
-                      color: Colors.white.withValues(alpha: 0.6),
+                    ControllerBtn(
+                      icon: SvgPicture.asset(
+                        'lib/assets/icon/dian1.svg',
+                        width: 25,
+                        height: 25,
+                        color: Colors.white.withValues(alpha: 0.6),
+                      ),
+                      onTap: () {},
                     ),
-                    onTap: () {},
-                  ),
-                ],
+                  ],
+                ),
               ),
-            )),
+            ),
           ),
         ],
       ),

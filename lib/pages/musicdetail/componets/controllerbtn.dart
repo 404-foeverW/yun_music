@@ -11,16 +11,14 @@ class ControllerBtns extends StatefulWidget {
   final Function(PlayMode) setPlayMode;
   final RxBool isPlaying;
   final Function() togglePlay;
-  final Function() playNext;
-  final Function() playPrev;
+  final Function(String) changeMusic;
   const ControllerBtns({
     super.key,
     required this.playMode,
     required this.setPlayMode,
     required this.isPlaying,
     required this.togglePlay,
-    required this.playNext,
-    required this.playPrev,
+    required this.changeMusic,
   });
 
   @override
@@ -41,6 +39,7 @@ class _ControllerBtnsState extends State<ControllerBtns> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
+        // 模式切换
         ControllerBtn(
           icon: Obx(() {
             return SvgPicture.asset(
@@ -56,6 +55,7 @@ class _ControllerBtnsState extends State<ControllerBtns> {
             playModeList.add(mode);
           },
         ),
+        // 上一首
         ControllerBtn(
           icon: Icon(
             CupertinoIcons.backward_end_fill,
@@ -63,9 +63,10 @@ class _ControllerBtnsState extends State<ControllerBtns> {
             color: Colors.white,
           ),
           onTap: () {
-            widget.playPrev();
+            widget.changeMusic('prev');
           },
         ),
+        // 播放/暂停
         ControllerBtn(
           icon: Obx(() {
             return SvgPicture.asset(
@@ -79,6 +80,7 @@ class _ControllerBtnsState extends State<ControllerBtns> {
             widget.togglePlay();
           },
         ),
+        // 下一首
         ControllerBtn(
           icon: Icon(
             CupertinoIcons.forward_end_fill,
@@ -86,9 +88,10 @@ class _ControllerBtnsState extends State<ControllerBtns> {
             color: Colors.white,
           ),
           onTap: () {
-            widget.playPrev();
+            widget.changeMusic('next');
           },
         ),
+        // 播放列表
         ControllerBtn(
           icon: SvgPicture.asset(
             'lib/assets/icon/bofangliebiao-white.svg',

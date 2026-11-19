@@ -60,15 +60,26 @@ class _ControllerState extends State<Controller>
               ),
               SizedBox(height: 10),
               // 进度条信息
-              Flex(
+              Obx(() => Flex(
                 direction: Axis.horizontal,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   AnimatedBuilder(
                     animation: widget.progressAnimation,
                     builder: (context, _) {
-                      return Obx(
-                        () => Text(
+                      // return Obx(
+                      //   () => Text(
+                      //     formatCurrentTime(
+                      //       widget.totalduration.value ?? Duration.zero,
+                      //       widget.progressAnimation.value,
+                      //     ),
+                      //     style: TextStyle(
+                      //       color: Colors.white.withAlpha(80),
+                      //       fontSize: 12,
+                      //     ),
+                      //   ),
+                      // );
+                      return Text(
                           formatCurrentTime(
                             widget.totalduration.value ?? Duration.zero,
                             widget.progressAnimation.value,
@@ -77,8 +88,7 @@ class _ControllerState extends State<Controller>
                             color: Colors.white.withAlpha(80),
                             fontSize: 12,
                           ),
-                        ),
-                      );
+                        );
                     },
                   ),
                   GestureDetector(
@@ -91,8 +101,19 @@ class _ControllerState extends State<Controller>
                       ),
                     ),
                   ),
-                  Obx(() {
-                    return Text(
+                  // Obx(() {
+                  //   return Text(
+                  //   formatCurrentTime(
+                  //     widget.totalduration.value ?? Duration.zero,
+                  //     1,
+                  //   ),
+                  //   style: TextStyle(
+                  //     color: Colors.white.withAlpha(80),
+                  //     fontSize: 12,
+                  //   ),
+                  // );
+                  // }),
+                  Text(
                     formatCurrentTime(
                       widget.totalduration.value ?? Duration.zero,
                       1,
@@ -101,10 +122,9 @@ class _ControllerState extends State<Controller>
                       color: Colors.white.withAlpha(80),
                       fontSize: 12,
                     ),
-                  );
-                  }),
+                  )
                 ],
-              ),
+              )),
               // SizedBox(height: 40),
               // 控制按钮
             ],
